@@ -40,8 +40,8 @@ export function Footer() {
           <span className="font-mono text-xs text-fg-muted">flightrec</span>
         </div>
         <div className="flex items-center gap-6 font-mono text-xs text-fg-faint">
-          <SmoothLink href="#demo" className="transition hover:text-fg">Demo</SmoothLink>
           <SmoothLink href="#architecture" className="transition hover:text-fg">Docs</SmoothLink>
+          <a href="/vision" className="transition hover:text-fg">Vision</a>
           <a href={REPO} className="transition hover:text-fg">GitHub</a>
         </div>
         <span className="font-mono text-xs text-fg-faint">
