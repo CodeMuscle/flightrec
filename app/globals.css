@@ -1,0 +1,227 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  Flightrec — "Soft Lab" design language (v3).
+  Light-first, airy white/pastel canvas, fine grain, very minor gradients.
+  SF Pro display + UI; Geist Mono only for data inside the product mockup.
+*/
+
+:root {
+  /* light — primary */
+  --bg: #fbfbfc;
+  --bg-raised: #ffffff;
+  --bg-inset: #f4f4f6;
+  --fg: #0b0b10;
+  --fg-muted: #5c5c67;
+  --fg-faint: #9a9aa5;
+  --line: rgba(12, 12, 28, 0.08);
+  --line-strong: rgba(12, 12, 28, 0.13);
+
+  /* soft accent — used sparingly */
+  --accent: #6f6cf0;
+  --accent-2: #5bb6f4;
+  --accent-soft: #eceaff;
+  --accent-dim: #5249d6;
+  --accent-glow: rgba(111, 108, 240, 0.14);
+  --accent-fg: #ffffff;
+  --grad: linear-gradient(100deg, #7b78f5 0%, #6f8df3 45%, #5bb6f4 100%);
+
+  /* pastel washes (very subtle) */
+  --wash-1: rgba(124, 120, 245, 0.10);
+  --wash-2: rgba(91, 182, 244, 0.10);
+  --wash-3: rgba(255, 175, 145, 0.07);
+
+  /* categorical (muted on light) */
+  --plane-action: #b06a16;
+  --plane-cache: #0e9384;
+  --plane-rsc: #635bff;
+  --plane-tree: #d6418a;
+  --plane-net: #1f86d8;
+  --plane-user: #8a8a94;
+
+  --shadow-sm: 0 1px 2px rgba(15, 15, 40, 0.05);
+  --shadow-card: 0 1px 2px rgba(15, 15, 40, 0.04), 0 10px 24px -10px rgba(15, 15, 50, 0.10),
+    0 28px 56px -24px rgba(15, 15, 50, 0.12);
+  --shadow-float: 0 2px 4px rgba(15, 15, 40, 0.05), 0 18px 40px -12px rgba(20, 20, 60, 0.18),
+    0 40px 80px -32px rgba(20, 20, 60, 0.22);
+
+  --radius: 16px;
+}
+
+.dark {
+  --bg: #0a0a0c;
+  --bg-raised: #131318;
+  --bg-inset: #0f0f13;
+  --fg: #f3f3f6;
+  --fg-muted: #a2a2ad;
+  --fg-faint: #6a6a74;
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.15);
+
+  --accent: #8b88ff;
+  --accent-2: #67c0ff;
+  --accent-soft: rgba(139, 136, 255, 0.14);
+  --accent-fg: #0a0a0c;
+  --grad: linear-gradient(100deg, #9a97ff 0%, #8b9cff 45%, #67c0ff 100%);
+
+  --wash-1: rgba(124, 120, 245, 0.16);
+  --wash-2: rgba(91, 182, 244, 0.14);
+  --wash-3: rgba(255, 150, 110, 0.08);
+
+  --plane-action: #f5b042;
+  --plane-cache: #2dd4bf;
+  --plane-rsc: #a5a0ff;
+  --plane-tree: #f472b6;
+  --plane-net: #56c2ff;
+  --plane-user: #a3a3a3;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 18px 40px -20px rgba(0, 0, 0, 0.8);
+  --shadow-float: 0 2px 8px rgba(0, 0, 0, 0.5), 0 30px 70px -24px rgba(0, 0, 0, 0.9);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-raised: var(--bg-raised);
+  --color-bg-inset: var(--bg-inset);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-faint: var(--fg-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-fg: var(--accent-fg);
+  --color-plane-action: var(--plane-action);
+  --color-plane-cache: var(--plane-cache);
+  --color-plane-rsc: var(--plane-rsc);
+  --color-plane-tree: var(--plane-tree);
+  --color-plane-net: var(--plane-net);
+  --color-plane-user: var(--plane-user);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  --font-display: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  border-color: var(--line);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  letter-spacing: -0.011em;
+  /* pastel washes + fine grain */
+  background-image:
+    radial-gradient(60% 50% at 15% 0%, var(--wash-1), transparent 70%),
+    radial-gradient(55% 45% at 85% 5%, var(--wash-2), transparent 70%),
+    radial-gradient(50% 40% at 50% 100%, var(--wash-3), transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--fg);
+}
+
+.font-mono {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 760;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+}
+.grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.page {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 2.5rem);
+}
+
+.surface,
+.card {
+  position: relative;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.card {
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s, border-color 0.2s;
+}
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-float);
+}
+
+/* fully-rounded pill buttons */
+.pill {
+  border-radius: 999px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+
+.text-balance { text-wrap: balance; }
+
+/* ---- motion ---- */
+@keyframes pulse-head { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.reveal { opacity: 0; transform: translateY(16px); }
+.reveal.in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
+
+.pane-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.pane-scroll::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 8px; }
+.pane-scroll::-webkit-scrollbar-track { background: transparent; }
