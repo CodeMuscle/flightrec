@@ -27,7 +27,7 @@ export function Hero() {
 
   // mockup: starts low (only ~half visible) → zooms up to fill the text area
   const rise = clamp(p / 0.36, 0, 1);
-  const mockYvh = lerp(54, 0, rise);
+  const mockYvh = lerp(64, 0, rise);
   const mockScale = lerp(0.8, 1, rise);
   const mockOpacity = lerp(0.85, 1, clamp(p / 0.18, 0, 1));
 
@@ -84,9 +84,6 @@ export function Hero() {
               Read the docs <span className="text-fg-faint">›</span>
             </a>
           </div>
-          <p className="mt-4 font-mono text-xs text-fg-faint">
-            Start free. No credit card required. · $299/mo for Growth.
-          </p>
         </div>
 
         {/* product mockup — starts low + half-visible, rises & zooms to center */}

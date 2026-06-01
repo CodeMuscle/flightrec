@@ -225,3 +225,31 @@ body {
 .pane-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
 .pane-scroll::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 8px; }
 .pane-scroll::-webkit-scrollbar-track { background: transparent; }
+
+/* ---- deck / print ---- */
+.deck-slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  padding-block: 7vh;
+}
+@page {
+  size: A4 landscape;
+  margin: 0;
+}
+@media print {
+  .no-print { display: none !important; }
+  html, body { background: #fff !important; }
+  body { background-image: none !important; }
+  .deck-slide {
+    min-height: auto;
+    height: 100vh;
+    page-break-after: always;
+    break-after: page;
+    padding: 6vh 7vw;
+    justify-content: center;
+  }
+  .deck-slide:last-child { page-break-after: auto; }
+  .card, .surface { box-shadow: none !important; }
+}
