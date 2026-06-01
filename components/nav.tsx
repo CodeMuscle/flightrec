@@ -1,42 +1,39 @@
 import { Logo } from "./logo";
 import { ThemeToggle } from "./theme-toggle";
+import { SmoothLink } from "./smooth-link";
 
 const LINKS = [
-  { href: "#demo", label: "Demo" },
-  { href: "#planes", label: "Six Planes" },
-  { href: "#cache", label: "Cache Semantics" },
+  { href: "#planes", label: "How It Works" },
   { href: "#architecture", label: "Architecture" },
-  { href: "#metrics", label: "Benchmarks" },
+  { href: "#metrics", label: "Performance" },
   { href: "#compare", label: "Compare" },
+  { href: "#pricing", label: "Pricing" },
 ];
 
 export function Nav() {
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-bg/75 backdrop-blur-xl">
       <div className="page flex h-14 items-center justify-between">
-        <a href="#top" className="flex items-center gap-2.5">
+        <SmoothLink href="#top" className="flex items-center gap-2.5">
           <Logo className="size-5 text-accent" />
           <span className="font-mono text-sm font-medium tracking-tight">flightrec</span>
           <span className="hidden rounded border border-line px-1.5 py-0.5 font-mono text-[10px] text-fg-faint sm:inline">
             v0.1 · alpha
           </span>
-        </a>
+        </SmoothLink>
 
         <nav className="hidden items-center gap-6 font-mono text-xs text-fg-muted lg:flex">
           {LINKS.map((l) => (
-            <a key={l.href} href={l.href} className="transition hover:text-fg">
+            <SmoothLink key={l.href} href={l.href} className="transition hover:text-fg">
               {l.label}
-            </a>
+            </SmoothLink>
           ))}
         </nav>
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <code className="hidden rounded-md border border-line bg-bg-inset px-2.5 py-1.5 font-mono text-xs text-fg-muted xl:block">
-            <span className="select-none text-fg-faint">$ </span>npm i flightrec
-          </code>
           <a
-            href="https://github.com"
+            href="https://github.com/CodeMuscle/flightrec"
             className="flex items-center gap-1.5 rounded-md border border-line-strong bg-bg-inset px-3 py-1.5 font-mono text-xs transition hover:border-accent hover:text-accent"
           >
             <GitHubIcon /> <span className="hidden sm:inline">Star</span>
