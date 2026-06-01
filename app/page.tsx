@@ -1,10 +1,11 @@
 import { Nav } from "@/components/nav";
 import { Hero } from "@/components/hero";
 import { Problem, SixPlanes } from "@/components/problem";
-import { CacheSemantics } from "@/components/cache-semantics";
-import { Comparison } from "@/components/comparison";
+import { UseCases } from "@/components/use-cases";
 import { Architecture } from "@/components/architecture";
-import { MetricsChart } from "@/components/metrics-chart";
+import { Performance } from "@/components/performance";
+import { Comparison } from "@/components/comparison";
+import { Pricing } from "@/components/pricing";
 import { Footer } from "@/components/footer";
 import { Reveal } from "@/components/reveal";
 
@@ -16,10 +17,11 @@ export default function Home() {
         <Hero />
         <Reveal><Problem /></Reveal>
         <Reveal><SixPlanes /></Reveal>
-        <Reveal><CacheSemantics /></Reveal>
+        <Reveal><UseCases /></Reveal>
         <Reveal><Architecture /></Reveal>
-        <Reveal><MetricsChart /></Reveal>
+        <Reveal><Performance /></Reveal>
         <Reveal><Comparison /></Reveal>
+        <Reveal><Pricing /></Reveal>
         <Footer />
       </main>
     </>

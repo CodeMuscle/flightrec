@@ -1,7 +1,11 @@
 # Flightrec — Build Roadmap & Blueprint
 
-> Time-travel debugger for React Server Components, Server Actions, cache invalidation,
-> streaming HTML, cookies/headers, and client transitions in Next.js App Router.
+
+
+
+
+
+
 
 This document turns the Master Product Document into an executable, phased plan.
 The guiding sequencing principle: **ship a credible landing page + synthetic interactive

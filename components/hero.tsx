@@ -1,66 +1,113 @@
-import { ScrubDemo } from "./scrub-demo";
-import { HeroBackdrop } from "./hero-backdrop";
+"use client";
+
+import { memo, useRef, useState } from "react";
+import { useMotionValueEvent, useScroll } from "motion/react";
+import { SessionTimelineMock, STEP_COUNT } from "./session-timeline-mock";
+import { ClickToCopy } from "./click-to-copy";
+
+const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+const MockMemo = memo(SessionTimelineMock);
 
 export function Hero() {
+  const ref = useRef<HTMLElement>(null);
+  const [p, setP] = useState(0);
+
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end end"],
+  });
+  useMotionValueEvent(scrollYProgress, "change", (v) => setP(v));
+
+  // text: full opacity at rest, fades as the mockup rises over it
+  const textOpacity = p <= 0.1 ? 1 : clamp(1 - (p - 0.1) / 0.18, 0, 1);
+  const textY = -26 * clamp(p / 0.28, 0, 1);
+  const textBlur = 7 * clamp((p - 0.12) / 0.18, 0, 1);
+
+  // mockup: starts low (only ~half visible) → zooms up to fill the text area
+  const rise = clamp(p / 0.36, 0, 1);
+  const mockYvh = lerp(54, 0, rise);
+  const mockScale = lerp(0.8, 1, rise);
+  const mockOpacity = lerp(0.85, 1, clamp(p / 0.18, 0, 1));
+
+  // steps play once the mockup is in place
+  const step = clamp(Math.round(lerp(0, STEP_COUNT - 1, clamp((p - 0.38) / 0.56, 0, 1))), 0, STEP_COUNT - 1);
+
   return (
-    <section id="top" className="relative overflow-hidden">
-      <HeroBackdrop />
-      <div className="page relative z-10 pb-16 pt-16 sm:pt-24">
-        <a
-          href="#demo"
-          className="mb-7 inline-flex items-center gap-2 rounded-full border border-line bg-bg-raised/70 px-3 py-1 font-mono text-xs text-fg-muted shadow-[var(--shadow-sm)] backdrop-blur transition hover:border-accent/50"
+    <section ref={ref} className="relative h-[240vh]">
+      <div className="sticky top-0 h-screen overflow-hidden">
+        {/* scroll progress hairline */}
+        <div className="absolute left-0 top-0 z-40 h-0.5 bg-accent" style={{ width: `${p * 100}%` }} />
+
+        {/* headline layer */}
+        <div
+          className="absolute inset-x-0 top-0 z-10 flex flex-col items-center px-5 pt-[12vh] text-center"
+          style={{
+            opacity: textOpacity,
+            transform: `translateY(${textY}px)`,
+            filter: `blur(${textBlur}px)`,
+            pointerEvents: textOpacity < 0.05 ? "none" : "auto",
+          }}
         >
-          <span className="size-1.5 animate-pulse rounded-full bg-accent" />
-          The flight recorder for the App Router
-        </a>
-
-        <h1 className="display max-w-3xl text-balance text-5xl sm:text-7xl">
-          Rewind any <em>Next.js</em> session.
-        </h1>
-
-        <p className="mt-6 max-w-2xl text-balance text-lg leading-relaxed text-fg-muted">
-          A time-travel debugger that records your App Router session as a replayable trace. Scrub
-          the timeline to see exactly which <Term>Server Action</Term> ran, which{" "}
-          <Term>cache tags</Term> changed, what <Term>RSC payload</Term> streamed, what{" "}
-          <Term>cookies / headers</Term> mutated, and how the <Term>client tree</Term> reacted —
-          all in one view.
-        </p>
-
-        <div className="mt-9 flex flex-wrap items-center gap-3">
-          <a
-            href="#demo"
-            className="group flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-accent-fg shadow-[0_6px_20px_-8px_var(--accent-glow)] transition hover:opacity-90"
-          >
-            Open the live demo
-            <span className="transition group-hover:translate-x-0.5">→</span>
-          </a>
-          <a
-            href="#architecture"
-            className="rounded-lg border border-line-strong bg-bg-raised px-5 py-2.5 text-sm text-fg-muted shadow-[var(--shadow-sm)] transition hover:text-fg"
-          >
-            Read the docs
-          </a>
-          <span className="font-mono text-xs text-fg-faint">MIT licensed · built in public</span>
-        </div>
-
-        <div id="demo" className="mt-16 scroll-mt-20">
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <span className="eyebrow">Live trace · blog post creator</span>
-            <span className="hidden font-mono text-xs text-fg-faint sm:block">
-              drag the timeline · ← → to scrub · space to play
-            </span>
+          <div className="pill inline-flex items-center gap-2 border border-line bg-bg-raised/80 px-3.5 py-1.5 text-sm text-fg-muted shadow-[var(--shadow-sm)] backdrop-blur">
+            <span className="size-1.5 rounded-full bg-accent" />
+            Introducing Flightrec
           </div>
-          <ScrubDemo />
+
+          <h1 className="display mt-7 text-balance text-6xl sm:text-[5.75rem]">
+            Debugging,
+            <br />
+            <span className="grad-text">rewound.</span>
+          </h1>
+
+          <div className="mt-7">
+            <ClickToCopy text="npm i flightrec" />
+          </div>
+
+          <p className="mt-6 max-w-xl text-balance text-lg leading-relaxed text-fg-muted">
+            Stop guessing what went wrong. Rewind your Next.js session and inspect every state
+            change — with absolute clarity.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="#"
+              className="pill bg-fg px-5 py-3 text-sm font-medium text-bg shadow-[var(--shadow-card)] transition hover:opacity-90"
+            >
+              Try Flightrec for free
+            </a>
+            <a
+              href="#architecture"
+              className="pill border border-line bg-bg-raised px-5 py-3 text-sm font-medium text-fg shadow-[var(--shadow-sm)] transition hover:border-line-strong"
+            >
+              Read the docs <span className="text-fg-faint">›</span>
+            </a>
+          </div>
+          <p className="mt-4 font-mono text-xs text-fg-faint">
+            Start free. No credit card required. · $299/mo for Growth.
+          </p>
         </div>
+
+        {/* product mockup — starts low + half-visible, rises & zooms to center */}
+        <div
+          className="absolute inset-0 z-30 flex items-center justify-center px-5"
+          style={{
+            transform: `translateY(${mockYvh}vh) scale(${mockScale})`,
+            transformOrigin: "center",
+            opacity: mockOpacity,
+          }}
+        >
+          <MockMemo step={step} />
+        </div>
+
+        <span
+          className="absolute bottom-5 left-1/2 z-40 -translate-x-1/2 font-mono text-[11px] uppercase tracking-widest text-fg-faint"
+          style={{ opacity: clamp(1 - p / 0.1, 0, 1) }}
+        >
+          scroll to replay ↓
+        </span>
       </div>
     </section>
-  );
-}
-
-function Term({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="text-fg underline decoration-line-strong decoration-dotted underline-offset-4">
-      {children}
-    </span>
   );
 }

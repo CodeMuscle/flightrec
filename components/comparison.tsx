@@ -1,20 +1,14 @@
-import { SectionLabel } from "./problem";
-
-/*
-  Honest positioning. Replay.io is a true time-travel debugger but for client JS — it has no
-  notion of Server Actions, cache tags, or the RSC/Flight payload. Sentry replays the DOM, not
-  server causality. Vercel Observability is traces/metrics. Next.js MCP is runtime metadata.
-*/
+import { SectionHeader } from "./section";
 
 type Val = boolean | "partial" | "meta";
 
 const COLS = [
-  { key: "rs", label: "Flightrec", note: "this project", accent: true },
-  { key: "replay", label: "Replay.io", note: "client JS time-travel", accent: false },
-  { key: "sentry", label: "Sentry Replay", note: "DOM session replay", accent: false },
-  { key: "vercel", label: "Vercel Obs.", note: "traces + metrics", accent: false },
-  { key: "mcp", label: "Next.js MCP", note: "runtime metadata", accent: false },
-  { key: "otel", label: "OpenTelemetry", note: "spans", accent: false },
+  { key: "rs", label: "Flightrec", note: "this", accent: true },
+  { key: "replay", label: "Replay.io", note: "client JS", accent: false },
+  { key: "sentry", label: "Sentry", note: "DOM replay", accent: false },
+  { key: "vercel", label: "Vercel Obs.", note: "traces", accent: false },
+  { key: "mcp", label: "Next.js MCP", note: "metadata", accent: false },
+  { key: "otel", label: "OTel", note: "spans", accent: false },
 ] as const;
 
 type RowKey = (typeof COLS)[number]["key"];
@@ -34,60 +28,55 @@ const ROWS: Row[] = [
 
 export function Comparison() {
   return (
-    <section id="compare" className="border-b border-line scroll-mt-16">
-      <div className="page py-24 sm:py-28">
-        <SectionLabel>Positioning</SectionLabel>
-        <h2 className="display mt-4 max-w-2xl text-balance text-4xl tracking-tight sm:text-[2.7rem]">
-          Adjacent tools each see one slice. None replay the whole chain.
-        </h2>
-        <p className="mt-3 max-w-3xl text-fg-muted">
-          Replay.io pioneered time-travel debugging — for client JavaScript. Sentry replays the DOM.
-          Vercel ships traces and metrics; Next.js MCP exposes runtime metadata; OpenTelemetry
-          captures spans. None provide a human-first replay of causality across Server Actions,
-          cache, RSC payloads, and client reconciliation.
-        </p>
+    <section id="compare" className="page scroll-mt-20 py-24 sm:py-28">
+      <SectionHeader
+        eyebrow="Positioning"
+        title="Adjacent tools each see one slice."
+        intro="Replay.io pioneered time-travel debugging — for client JavaScript. Sentry replays the DOM; Vercel ships traces; Next.js MCP exposes metadata; OpenTelemetry captures spans. None replay causality across Server Actions, cache, RSC, and reconciliation."
+      />
 
-        <div className="card mt-12 overflow-x-auto">
-          <table className="w-full min-w-[860px] border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-line bg-bg-inset">
-                <th className="px-5 py-3 text-left font-mono text-xs font-normal uppercase tracking-wider text-fg-faint">
-                  Capability
+      <div className="card mt-12 overflow-x-auto p-0">
+        <table className="w-full min-w-[820px] border-collapse text-sm">
+          <thead>
+            <tr className="border-b border-line">
+              <th className="px-5 py-4 text-left font-mono text-xs font-normal uppercase tracking-wider text-fg-faint">
+                Capability
+              </th>
+              {COLS.map((c) => (
+                <th
+                  key={c.key}
+                  className="px-4 py-4 text-left"
+                  style={c.accent ? { background: "var(--accent-soft)" } : undefined}
+                >
+                  <div className={`text-sm font-semibold ${c.accent ? "text-accent" : "text-fg"}`}>
+                    {c.label}
+                  </div>
+                  <div className="mt-0.5 font-mono text-[10px] font-normal text-fg-faint">{c.note}</div>
                 </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {ROWS.map((r) => (
+              <tr key={r.cap} className="border-b border-line last:border-b-0">
+                <td className="px-5 py-3 text-fg-muted">{r.cap}</td>
                 {COLS.map((c) => (
-                  <th key={c.key} className="px-4 py-3 text-left">
-                    <div className={`font-mono text-xs ${c.accent ? "text-accent" : "text-fg"}`}>
-                      {c.label}
-                    </div>
-                    <div className="mt-0.5 font-mono text-[10px] font-normal text-fg-faint">
-                      {c.note}
-                    </div>
-                  </th>
+                  <td
+                    key={c.key}
+                    className="px-4 py-3"
+                    style={c.accent ? { background: "var(--accent-soft)" } : undefined}
+                  >
+                    <Cell value={r[c.key]} accent={c.accent} />
+                  </td>
                 ))}
               </tr>
-            </thead>
-            <tbody>
-              {ROWS.map((r, i) => (
-                <tr
-                  key={r.cap}
-                  className={`border-b border-line last:border-b-0 ${i % 2 ? "bg-bg-raised" : "bg-bg"}`}
-                >
-                  <td className="px-5 py-3 text-fg-muted">{r.cap}</td>
-                  {COLS.map((c) => (
-                    <td key={c.key} className="px-4 py-3">
-                      <Cell value={r[c.key]} accent={c.accent} />
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-3 font-mono text-[11px] text-fg-faint">
-          ● full · ◐ partial · — none. Comparison reflects each tool&apos;s primary design intent, not
-          a knock on its quality.
-        </p>
+            ))}
+          </tbody>
+        </table>
       </div>
+      <p className="mt-3 font-mono text-[11px] text-fg-faint">
+        ● full · ◐ partial · — none. Reflects each tool&apos;s primary design intent.
+      </p>
     </section>
   );
 }
