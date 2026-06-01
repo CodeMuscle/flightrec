@@ -9,7 +9,7 @@ export function ClickToCopy({ text }: { text: string }) {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1600);
+      setTimeout(() => setCopied(false), 2000);
     } catch {
       /* clipboard unavailable */
     }
@@ -18,12 +18,16 @@ export function ClickToCopy({ text }: { text: string }) {
   return (
     <button
       onClick={copy}
-      className="pill group inline-flex items-center gap-2.5 border border-line bg-bg-raised px-4 py-2 font-mono text-sm text-fg-muted shadow-[var(--shadow-sm)] transition hover:border-line-strong hover:text-fg"
-      aria-label={`Copy ${text}`}
+      className={`pill group inline-flex items-center gap-2.5 border bg-bg-raised px-4 py-2 font-mono text-sm shadow-[var(--shadow-sm)] transition ${
+        copied
+          ? "cursor-default border-accent text-fg"
+          : "cursor-pointer border-line text-fg-muted hover:border-line-strong hover:text-fg"
+      }`}
+      aria-label={copied ? "Copied" : `Copy ${text}`}
     >
       <span className="select-none text-fg-faint">$</span>
-      <span className="select-none">{text}</span>
-      <span className="text-fg-faint transition group-hover:text-accent">
+      <span className="select-none">{copied ? "Copied!" : text}</span>
+      <span className={`transition ${copied ? "text-accent" : "text-fg-faint group-hover:text-accent"}`}>
         {copied ? <CheckIcon /> : <CopyIcon />}
       </span>
       <span className="sr-only">{copied ? "Copied" : "Click to copy"}</span>
