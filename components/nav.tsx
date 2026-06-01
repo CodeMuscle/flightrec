@@ -16,7 +16,7 @@ export function Nav() {
       <div className="page flex h-14 items-center justify-between">
         <a href="#top" className="flex items-center gap-2.5">
           <Logo className="size-5 text-accent" />
-          <span className="font-mono text-sm font-medium tracking-tight">rewindscope</span>
+          <span className="font-mono text-sm font-medium tracking-tight">flightrec</span>
           <span className="hidden rounded border border-line px-1.5 py-0.5 font-mono text-[10px] text-fg-faint sm:inline">
             v0.1 · alpha
           </span>
@@ -33,7 +33,7 @@ export function Nav() {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <code className="hidden rounded-md border border-line bg-bg-inset px-2.5 py-1.5 font-mono text-xs text-fg-muted xl:block">
-            <span className="select-none text-fg-faint">$ </span>npm i rewindscope
+            <span className="select-none text-fg-faint">$ </span>npm i flightrec
           </code>
           <a
             href="https://github.com"

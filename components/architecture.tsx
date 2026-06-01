@@ -12,9 +12,9 @@ const FLOW = [
 export function Architecture() {
   return (
     <section id="architecture" className="border-b border-line scroll-mt-16">
-      <div className="page py-20">
+      <div className="page py-24 sm:py-28">
         <SectionLabel>How it works</SectionLabel>
-        <h2 className="mt-3 max-w-2xl text-balance text-3xl font-semibold tracking-tight">
+        <h2 className="display mt-4 max-w-2xl text-balance text-4xl tracking-tight sm:text-[2.7rem]">
           Capture on both sides. Normalize. Replay deterministically.
         </h2>
         <p className="mt-3 max-w-2xl text-fg-muted">
@@ -51,7 +51,7 @@ export function Architecture() {
               ["", "\n  "],
               ["c", "// captures Server Actions, cache, RSC, headers"],
               ["", "\n  "],
-              ["f", "registerRewindscope"],
+              ["f", "registerFlightrec"],
               ["p", "({ mode: "],
               ["s", "'normal'"],
               ["p", " })"],
@@ -60,7 +60,7 @@ export function Architecture() {
           />
           <CodeCard
             title="export a session"
-            sub="produce a shareable .rwd bundle"
+            sub="produce a shareable .frec bundle"
             lines={[
               ["k", "const"],
               [" ", " bundle = "],
@@ -69,7 +69,7 @@ export function Architecture() {
               ["f", "export"],
               ["p", "()"],
               ["", "\n"],
-              ["c", "// → ses_8f31a0.rwd  (zip + manifest + diffs)"],
+              ["c", "// → ses_8f31a0.frec  (zip + manifest + diffs)"],
               ["", "\n"],
               ["k", "await"],
               [" ", " bundle."],
@@ -103,7 +103,7 @@ function CodeCard({
   lines: [string, string][];
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-line bg-bg-raised">
+    <div className="card overflow-hidden">
       <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
         <span className="font-mono text-xs text-fg">{title}</span>
         <span className="font-mono text-[11px] text-fg-faint">{sub}</span>

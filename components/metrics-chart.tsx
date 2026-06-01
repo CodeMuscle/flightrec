@@ -7,11 +7,11 @@ import { SectionLabel } from "./problem";
 */
 const BARS = [
   { id: "A", label: "No instrumentation", x: 1.0, tone: "base" },
-  { id: "C", label: "Rewindscope · minimal", x: 1.04, tone: "good" },
-  { id: "D", label: "Rewindscope · normal", x: 1.09, tone: "accent" },
+  { id: "C", label: "Flightrec · minimal", x: 1.04, tone: "good" },
+  { id: "D", label: "Flightrec · normal", x: 1.09, tone: "accent" },
   { id: "B", label: "OpenTelemetry baseline", x: 1.12, tone: "muted" },
-  { id: "F", label: "OTel + Rewindscope", x: 1.22, tone: "muted" },
-  { id: "E", label: "Rewindscope · verbose", x: 1.31, tone: "warn" },
+  { id: "F", label: "OTel + Flightrec", x: 1.22, tone: "muted" },
+  { id: "E", label: "Flightrec · verbose", x: 1.31, tone: "warn" },
 ] as const;
 
 const MAX = 1.4;
@@ -30,18 +30,18 @@ const toneColor = (t: string) =>
 export function MetricsChart() {
   return (
     <section id="metrics" className="border-b border-line scroll-mt-16">
-      <div className="page py-20">
+      <div className="page py-24 sm:py-28">
         <SectionLabel>Benchmarks</SectionLabel>
-        <h2 className="mt-3 max-w-2xl text-balance text-3xl font-semibold tracking-tight">
+        <h2 className="display mt-4 max-w-2xl text-balance text-4xl tracking-tight sm:text-[2.7rem]">
           Dev-only overhead, measured against an OpenTelemetry baseline.
         </h2>
         <p className="mt-3 max-w-2xl text-fg-muted">
-          A debugger you can&apos;t afford to run is a demo, not a tool. Rewindscope&apos;s normal
+          A debugger you can&apos;t afford to run is a demo, not a tool. Flightrec&apos;s normal
           mode targets a bounded dev-only envelope, with a documented path to minimal mode for large
           apps. We benchmark like OTel recommends — warm-up, repetitions, out-of-process exporters.
         </p>
 
-        <div className="mt-10 rounded-xl border border-line bg-bg-raised p-6 sm:p-8">
+        <div className="card mt-12 p-6 sm:p-8">
           <div className="mb-5 flex items-baseline justify-between">
             <span className="font-mono text-xs uppercase tracking-wider text-fg-faint">
               p95 request latency · relative to baseline
