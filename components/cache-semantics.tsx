@@ -33,20 +33,20 @@ const toneColor = (t: string) =>
 export function CacheSemantics() {
   return (
     <section id="cache" className="border-b border-line scroll-mt-16">
-      <div className="page py-20">
+      <div className="page py-24 sm:py-28">
         <SectionLabel>The aha</SectionLabel>
-        <h2 className="mt-3 max-w-2xl text-balance text-3xl font-semibold tracking-tight">
+        <h2 className="display mt-4 max-w-2xl text-balance text-4xl tracking-tight sm:text-[2.7rem]">
           Not &ldquo;tag invalidated.&rdquo; Whether the user saw fresh data.
         </h2>
         <p className="mt-3 max-w-2xl text-fg-muted">
           Recording that an invalidation happened is easy. The hard part is explaining whether the
-          semantics matched intent. Rewindscope correlates each invalidation with the RSC request
+          semantics matched intent. Flightrec correlates each invalidation with the RSC request
           that followed and classifies the real-world outcome.
         </p>
 
-        <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-line bg-line md:grid-cols-2">
+        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
           {OUTCOMES.map((o) => (
-            <div key={o.id} className="bg-bg-raised p-6">
+            <div key={o.id} className="card card-hover p-6">
               <div className="flex items-center gap-2.5">
                 <span
                   className="size-2 rounded-full"

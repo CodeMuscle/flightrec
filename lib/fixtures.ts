@@ -7,7 +7,7 @@
  *
  * This is the exact UX of the real inspector, running on deterministic synthetic
  * data — no recorder/backend required. In Phase 0 these become generated golden
- * `.rwd` fixtures shared with the real inspector app.
+ * `.frec` fixtures shared with the real inspector app.
  */
 
 export type Plane = "user" | "action" | "cache" | "rsc" | "net" | "tree";
@@ -78,7 +78,7 @@ export const TICKS: Tick[] = [
     plane: "user",
     phase: "user-input",
     title: "Type title",
-    detail: 'value = "Shipping Rewindscope"',
+    detail: 'value = "Shipping Flightrec"',
     route: "/posts/new",
     source: "app/posts/new/page.tsx:NewPostForm",
   },
@@ -101,7 +101,7 @@ export const TICKS: Tick[] = [
     detail: "Server Action invoked with form payload.",
     route: "/posts/new",
     source: "app/posts/actions.ts:createPost",
-    action: { name: "createPost", status: "running", argsPreview: '{ title: "Shipping Rewindscope" }' },
+    action: { name: "createPost", status: "running", argsPreview: '{ title: "Shipping Flightrec" }' },
   },
   {
     tick: 4,
@@ -180,7 +180,7 @@ export const TICKS: Tick[] = [
     detail: "Client tree patched with fresh server data.",
     route: "/posts/42",
     source: "app/posts/[id]/page.tsx:PostTitle",
-    tree: { kind: "patch", label: "<h1> Shipping Rewindscope", depth: 2 },
+    tree: { kind: "patch", label: "<h1> Shipping Flightrec", depth: 2 },
   },
   {
     tick: 11,

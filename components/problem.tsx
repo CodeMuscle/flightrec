@@ -26,14 +26,14 @@ const PROBLEMS = [
 export function Problem() {
   return (
     <section className="border-b border-line">
-      <div className="page py-20">
+      <div className="page py-24 sm:py-28">
         <SectionLabel>The problem</SectionLabel>
-        <h2 className="mt-3 max-w-2xl text-balance text-3xl font-semibold tracking-tight">
+        <h2 className="display mt-4 max-w-2xl text-balance text-4xl tracking-tight sm:text-[2.7rem]">
           App Router apps are hard to debug because the story is scattered.
         </h2>
-        <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {PROBLEMS.map((p) => (
-            <div key={p.k} className="bg-bg-raised p-6">
+            <div key={p.k} className="card card-hover p-6">
               <span className="font-mono text-xs text-accent-dim">{p.k}</span>
               <h3 className="mt-3 text-base font-medium">{p.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-fg-muted">{p.body}</p>
@@ -49,18 +49,18 @@ export function SixPlanes() {
   const planes = Object.keys(PLANE_META) as Plane[];
   return (
     <section id="planes" className="border-b border-line scroll-mt-16">
-      <div className="page py-20">
+      <div className="page py-24 sm:py-28">
         <SectionLabel>The wedge</SectionLabel>
-        <h2 className="mt-3 max-w-2xl text-balance text-3xl font-semibold tracking-tight">
+        <h2 className="display mt-4 max-w-2xl text-balance text-4xl tracking-tight sm:text-[2.7rem]">
           One debugger, six planes, a single timeline.
         </h2>
         <p className="mt-3 max-w-2xl text-fg-muted">
-          Observability shows you one slice. Runtime metadata shows you another. Rewindscope
+          Observability shows you one slice. Runtime metadata shows you another. Flightrec
           unifies all six planes against one scrubber — the key differentiator versus traces,
           metrics, or generic session replay.
         </p>
 
-        <div className="mt-10 overflow-hidden rounded-xl border border-line">
+        <div className="card mt-12 overflow-hidden">
           {planes.map((p, i) => (
             <div
               key={p}
@@ -102,7 +102,7 @@ const DESCRIPTIONS: Record<Plane, string> = {
 
 export function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="font-mono text-xs uppercase tracking-[0.2em] text-accent-dim">
+    <span className="eyebrow">
       {children}
     </span>
   );

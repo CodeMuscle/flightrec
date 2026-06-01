@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⏪ Rewindscope
+# ⏪ Flightrec
 
 **A time-travel debugger for the Next.js App Router.**
 
@@ -23,11 +23,11 @@ MIT licensed · built in public
 App Router apps are hard to debug because the story is scattered: state is split across the
 server/client boundary, rendering is streamed in RSC chunks, cache invalidation changes behavior
 over time, and no tool unifies these layers. Logs, traces, metrics, and firewall rules each see
-one slice. Rewindscope replays the whole causal chain on a single scrubbable timeline.
+one slice. Flightrec replays the whole causal chain on a single scrubbable timeline.
 
 ## The six planes
 
-Rewindscope unifies six planes against one timeline — the differentiator versus observability,
+Flightrec unifies six planes against one timeline — the differentiator versus observability,
 runtime metadata, or generic session replay:
 
 1. **User actions** — clicks, inputs, navigations that start the chain

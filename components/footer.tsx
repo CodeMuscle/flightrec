@@ -6,11 +6,11 @@ export function Footer() {
       {/* build in public CTA */}
       <section className="border-b border-line">
         <div className="page py-20 text-center">
-          <h2 className="mx-auto max-w-2xl text-balance text-3xl font-semibold tracking-tight">
+          <h2 className="display mx-auto max-w-2xl text-balance text-4xl tracking-tight sm:text-[2.7rem]">
             Built in the open. Watch it take shape.
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-fg-muted">
-            Rewindscope is MIT-licensed and built in public. The demo above runs on synthetic
+            Flightrec is MIT-licensed and built in public. The demo above runs on synthetic
             data today — the recorder, inspector, and MCP server are landing phase by phase.
           </p>
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
@@ -33,7 +33,7 @@ export function Footer() {
       <footer className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-10 sm:flex-row">
         <div className="flex items-center gap-2.5">
           <Logo className="size-4 text-accent" />
-          <span className="font-mono text-xs text-fg-muted">rewindscope</span>
+          <span className="font-mono text-xs text-fg-muted">flightrec</span>
           <span className="font-mono text-xs text-fg-faint">· MIT</span>
         </div>
         <div className="flex items-center gap-6 font-mono text-xs text-fg-faint">

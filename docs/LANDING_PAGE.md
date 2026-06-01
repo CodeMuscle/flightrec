@@ -1,4 +1,4 @@
-# Rewindscope — Landing Page Blueprint
+# Flightrec — Landing Page Blueprint
 
 Aesthetic target: **shadcn / Vercel docs-grade** — restrained, typographic, precise borders,
 segmented panes, subtle motion. No noisy gradients. Engineering-first and trustworthy.
@@ -24,10 +24,10 @@ segmented panes, subtle motion. No noisy gradients. Engineering-first and trustw
    - Built on Phase-0 synthetic fixtures (no backend).
 5. **Concept explainer animation** — 10s loop: click *Save* → Server Action runs → `updateTag` invalidates → RSC frames stream → tree updates. Labels + subtle arrows.
 6. **The six planes** — the differentiator: user actions · Server Actions · cache · RSC payloads · response mutations · client tree. Compact segmented graphic.
-7. **Comparison section** — Rewindscope vs Vercel Observability vs Next.js MCP vs generic session replay. Honest table; we win on "human-first replay of causality".
+7. **Comparison section** — Flightrec vs Vercel Observability vs Next.js MCP vs generic session replay. Honest table; we win on "human-first replay of causality".
 8. **Cache Semantics teaser** — show the 4 outcomes (`immediate-freshness` / `stale-then-refresh` / `no-visible-effect` / `orphaned-invalidation`) as a small annotated example. This is the "aha".
 9. **Architecture** — the high-level Mermaid flowchart + ER diagram, in collapsible code-snippet cards.
-10. **Code snippet cards** — `instrumentation.ts` one-liner setup; `.rwd` export; reading a trace. Copy buttons.
+10. **Code snippet cards** — `instrumentation.ts` one-liner setup; `.frec` export; reading a trace. Copy buttons.
 11. **Roadmap / build-in-public** — link to the public roadmap + X handle; "we're building this in the open".
 12. **Footer** — license, GitHub, docs, contributing.
 

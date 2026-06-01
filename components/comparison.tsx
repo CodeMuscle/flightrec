@@ -9,7 +9,7 @@ import { SectionLabel } from "./problem";
 type Val = boolean | "partial" | "meta";
 
 const COLS = [
-  { key: "rs", label: "Rewindscope", note: "this project", accent: true },
+  { key: "rs", label: "Flightrec", note: "this project", accent: true },
   { key: "replay", label: "Replay.io", note: "client JS time-travel", accent: false },
   { key: "sentry", label: "Sentry Replay", note: "DOM session replay", accent: false },
   { key: "vercel", label: "Vercel Obs.", note: "traces + metrics", accent: false },
@@ -35,9 +35,9 @@ const ROWS: Row[] = [
 export function Comparison() {
   return (
     <section id="compare" className="border-b border-line scroll-mt-16">
-      <div className="page py-20">
+      <div className="page py-24 sm:py-28">
         <SectionLabel>Positioning</SectionLabel>
-        <h2 className="mt-3 max-w-2xl text-balance text-3xl font-semibold tracking-tight">
+        <h2 className="display mt-4 max-w-2xl text-balance text-4xl tracking-tight sm:text-[2.7rem]">
           Adjacent tools each see one slice. None replay the whole chain.
         </h2>
         <p className="mt-3 max-w-3xl text-fg-muted">
@@ -47,7 +47,7 @@ export function Comparison() {
           cache, RSC payloads, and client reconciliation.
         </p>
 
-        <div className="mt-10 overflow-x-auto rounded-xl border border-line">
+        <div className="card mt-12 overflow-x-auto">
           <table className="w-full min-w-[860px] border-collapse text-sm">
             <thead>
               <tr className="border-b border-line bg-bg-inset">

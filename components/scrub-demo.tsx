@@ -72,7 +72,7 @@ export function ScrubDemo() {
       tabIndex={0}
       onKeyDown={onKey}
       role="application"
-      aria-label="Interactive Rewindscope timeline demo"
+      aria-label="Interactive Flightrec timeline demo"
     >
       {/* title bar */}
       <div className="flex items-center justify-between gap-4 border-b border-line px-4 py-2.5">
@@ -83,7 +83,7 @@ export function ScrubDemo() {
             <span className="size-2.5 rounded-full bg-[#28c840]" />
           </div>
           <span className="truncate font-mono text-xs text-fg-faint">
-            rewindscope · session {SESSION.id}
+            flightrec · session {SESSION.id}
           </span>
         </div>
         <span className="hidden font-mono text-[11px] text-fg-faint sm:block">

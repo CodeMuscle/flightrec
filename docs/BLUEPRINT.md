@@ -1,6 +1,6 @@
-# Rewindscope — Master Blueprint
+# Flightrec — Master Blueprint
 
-> The single source of truth for **what** Rewindscope is, **how** it works end-to-end, and the
+> The single source of truth for **what** Flightrec is, **how** it works end-to-end, and the
 > **phased plan** to build it to a fundable, scalable, open-source product. Diagrams are Mermaid
 > (render on GitHub and in the docs site). Pair with [ROADMAP.md](./ROADMAP.md),
 > [DESIGN.md](./DESIGN.md), and [BUILD_IN_PUBLIC.md](./BUILD_IN_PUBLIC.md).
@@ -76,17 +76,17 @@ stateDiagram-v2
   Invalidated --> OrphanedInvalidation: nothing depends on the tag
 ```
 
-### 1.5 Where Rewindscope sits (MCP, observability, replay)
-MCP and observability are *enrichment*. Rewindscope is the **record + replay** core.
+### 1.5 Where Flightrec sits (MCP, observability, replay)
+MCP and observability are *enrichment*. Flightrec is the **record + replay** core.
 
 ```mermaid
 flowchart TB
-  REC[Rewindscope recorder] --> BUNDLE[(.rwd bundle — source of truth)]
+  REC[Flightrec recorder] --> BUNDLE[(.frec bundle — source of truth)]
   BUNDLE --> INSPECT[Inspector replay]
   MCP[Next.js MCP] -. enrich .-> INSPECT
   OTEL[OpenTelemetry] -. correlate .-> INSPECT
   INSPECT --> HUMAN[Engineer]
-  INSPECT --> AGENT[Coding agent via Rewindscope MCP]
+  INSPECT --> AGENT[Coding agent via Flightrec MCP]
 ```
 
 ---
@@ -106,11 +106,11 @@ flowchart LR
   end
   subgraph Persist
     IDB[(IndexedDB / OPFS)]
-    RWD[(.rwd bundle)]
+    RWD[(.frec bundle)]
   end
   subgraph Consume
     INS[Inspector PWA]
-    MCPS[Rewindscope MCP server]
+    MCPS[Flightrec MCP server]
     AI[AI insights]
     VS[VS Code ext]
   end
@@ -128,7 +128,7 @@ flowchart LR
 ```
 
 **One sentence:** capture on both sides → redact → normalize to ops → reconcile into a
-versioned replay graph with checkpoints → persist locally / export `.rwd` → replay in the
+versioned replay graph with checkpoints → persist locally / export `.frec` → replay in the
 inspector, queryable by humans, agents, and your editor.
 
 ---
@@ -156,7 +156,7 @@ flowchart TB
   subgraph io packages
     SIDB[trace-storage-indexeddb]
     SOPFS[trace-storage-opfs]
-    RWD[bundle-rwd]
+    RWD[bundle-frec]
   end
   subgraph intelligence
     AI[ai-insights]
@@ -175,7 +175,7 @@ flowchart TB
 **Boundaries that matter**
 - `recorder-core` + `trace-schema` are **framework-agnostic** (enables Remix/SvelteKit later).
 - `reconciler` is the **highest-risk** unit and lives alone, test-first.
-- `.rwd` is **self-contained**; replay never needs a live server or MCP.
+- `.frec` is **self-contained**; replay never needs a live server or MCP.
 
 ---
 
@@ -200,7 +200,7 @@ sequenceDiagram
 
 ### 4.2 Trace schema (Zod-validated, versioned)
 `TraceEvent` (11 phases), `RscFrame` + `RscOp`, `CacheOutcome`, `Session`, `Snapshot`,
-`SourceMapRef`. Every bundle carries `schemaVersion`; `bundle-rwd` migrates older bundles.
+`SourceMapRef`. Every bundle carries `schemaVersion`; `bundle-frec` migrates older bundles.
 
 ### 4.3 Reconciliation algorithm (the replay engine)
 ```
@@ -213,7 +213,7 @@ for each session:
     if stableBoundary(frame):                 # request done | redirect | suspense resolve
       persist checkpoint snapshot              #             | action end | new route segment
       emit tree:diff event
-  store structural diffs between checkpoints   # keeps .rwd small, scrubbing O(1) to a checkpoint
+  store structural diffs between checkpoints   # keeps .frec small, scrubbing O(1) to a checkpoint
 ```
 
 ### 4.4 Entity model (ER)
@@ -255,7 +255,7 @@ artifact · Visual**. (Full drafts in [BUILD_IN_PUBLIC.md](./BUILD_IN_PUBLIC.md)
 ### Phase 2 — Inspector MVP
 | Module | Angle | Artifact |
 |---|---|---|
-| `.rwd` load/render | "Export a session, open it anywhere — drag & drop." | drag-drop clip |
+| `.frec` load/render | "Export a session, open it anywhere — drag & drop." | drag-drop clip |
 | Virtualized timeline | "10k events, still 60fps." | perf clip |
 | 5 inspector modes | THREAD: "5 ways to look at one session." | mode-switch clip |
 | Export/import round-trip | "Bit-for-bit lossless bundles." | diff screenshot |
@@ -282,7 +282,7 @@ artifact · Visual**. (Full drafts in [BUILD_IN_PUBLIC.md](./BUILD_IN_PUBLIC.md)
 |---|---|---|
 | VS Code extension | "Debug the session from your editor." | ext clip |
 | `mcp-adapter` enrichment | "actionId → file:symbol via Next.js MCP." | side-panel clip |
-| Rewindscope MCP server | "Ask your agent: which action caused this stale state?" | agent Q&A clip |
+| Flightrec MCP server | "Ask your agent: which action caused this stale state?" | agent Q&A clip |
 | `ai-insights` | "One click → a bug report a teammate can act on." | generated report |
 
 ### Phase 6 — Growth / scale
@@ -303,9 +303,9 @@ Beyond the product, these make it shippable, scalable, and VC-credible.
 - **Self-hostable** cloud sync (privacy-first); BYO storage (S3/R2) for teams.
 
 ### Product & DX
-- **One-command install** (`npx rewindscope init`) wiring `instrumentation.ts`.
+- **One-command install** (`npx flightrec init`) wiring `instrumentation.ts`.
 - **Framework-agnostic core** to expand TAM (Remix, SvelteKit, TanStack Start) without rewrites.
-- **GitHub App**: auto-capture a `.rwd` on E2E/CI failure, attach to the PR/issue → regression-repro tool.
+- **GitHub App**: auto-capture a `.frec` on E2E/CI failure, attach to the PR/issue → regression-repro tool.
 - **Shareable read-only trace links** (Sentry-replay style) — viral loop + the paid hook.
 - **OpenTelemetry interop** (ingest spans as a lane, export ticks) — fits existing stacks.
 
@@ -313,7 +313,7 @@ Beyond the product, these make it shippable, scalable, and VC-credible.
 - **License**: MIT core (SDK + inspector + schema) for adoption; **commercial** cloud (team sync, retention, SSO, audit, shared links, AI quota).
 - **Pricing sketch**: Free (local, solo) · Team (cloud sync, shared links, retention) · Enterprise (SSO/SAML, self-host, support, SLA).
 - **Wedge → expand**: solo dev debugging → team regression repros → CI-integrated quality gate.
-- **Metrics that matter to VCs**: GitHub stars/contributors, weekly active inspectors, `.rwd` exports, traces shared, time-to-first-trace, paid team conversion, logo land (which Next.js shops adopt).
+- **Metrics that matter to VCs**: GitHub stars/contributors, weekly active inspectors, `.frec` exports, traces shared, time-to-first-trace, paid team conversion, logo land (which Next.js shops adopt).
 - **Compliance roadmap** (post-PMF): SOC 2 Type II, data residency, DPA — gate enterprise.
 - **Moat**: the trace format + the reconciliation/semantics engine + ecosystem (MCP, editor, CI) — not the UI.
 
@@ -330,8 +330,8 @@ Beyond the product, these make it shippable, scalable, and VC-credible.
 flowchart TD
   X[Build-in-public on X / HN / Reddit] --> LP[Landing page + live demo]
   LP --> STAR[GitHub star]
-  LP --> TRY[npx rewindscope init]
-  TRY --> FIRST[First .rwd in < 5 min]
+  LP --> TRY[npx flightrec init]
+  TRY --> FIRST[First .frec in < 5 min]
   FIRST --> SHARE[Share a trace link]
   SHARE --> TEAM[Teammate opens it]
   TEAM --> CLOUD[Team cloud sync]
@@ -351,7 +351,7 @@ Two surfaces, both in `apps/docs-site`:
 **A. Documentation website** (Nextra/Fumadocs, `/docs`)
 - Primer (the Part 1 diagrams, interactive).
 - HLD / LLD / ER / pipeline (Part 2–4), Mermaid-rendered with prose.
-- Recorder setup, capture modes, `.rwd` format spec, schema reference.
+- Recorder setup, capture modes, `.frec` format spec, schema reference.
 - MCP server reference, VS Code guide, benchmarking methodology.
 - Contributing + architecture decision records (ADRs).
 
