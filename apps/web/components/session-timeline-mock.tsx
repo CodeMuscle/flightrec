@@ -111,7 +111,9 @@ export function SessionTimelineMock({ step }: { step: number }) {
                   className="flex min-w-max items-start gap-3 rounded-xl border p-3 transition-colors sm:min-w-0"
                   style={{
                     background: on ? "var(--accent-soft)" : "transparent",
-                    borderColor: on ? "color-mix(in srgb, var(--accent) 35%, transparent)" : "transparent",
+                    borderColor: on
+                      ? "color-mix(in srgb, var(--accent) 35%, transparent)"
+                      : "transparent",
                   }}
                 >
                   <span style={{ color: on ? st.plane : "var(--fg-faint)" }} className="mt-0.5">
@@ -175,8 +177,7 @@ export function SessionTimelineMock({ step }: { step: number }) {
       {/* footer: the cache-semantics differentiator, always visible */}
       <div className="flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-line bg-bg-inset px-4 py-2.5 font-mono text-[11px]">
         <span className="text-fg-faint">
-          cache{" "}
-          <span className="text-fg-muted">updateTag(&apos;posts&apos;)</span> →{" "}
+          cache <span className="text-fg-muted">updateTag(&apos;posts&apos;)</span> →{" "}
           <span className="text-plane-cache">immediate-freshness ✓</span>
         </span>
         <span className="text-fg-faint">
@@ -191,8 +192,15 @@ export function SessionTimelineMock({ step }: { step: number }) {
 function CodeLine({ line, n }: { line: Line; n: number }) {
   if (line.t === "empty") return <div className="h-5" />;
 
-  const styles: Record<Exclude<LineType, "empty">, { row: string; num: string; text: React.CSSProperties; prefix?: string; strike?: boolean }> = {
-    normal: { row: "hover:bg-fg/[0.03]", num: "text-fg-faint/60", text: { color: "var(--fg-muted)" } },
+  const styles: Record<
+    Exclude<LineType, "empty">,
+    { row: string; num: string; text: React.CSSProperties; prefix?: string; strike?: boolean }
+  > = {
+    normal: {
+      row: "hover:bg-fg/[0.03]",
+      num: "text-fg-faint/60",
+      text: { color: "var(--fg-muted)" },
+    },
     highlight: {
       row: "-mx-4 border-l-2 border-accent bg-accent-soft px-4",
       num: "text-fg-faint",
@@ -211,7 +219,11 @@ function CodeLine({ line, n }: { line: Line; n: number }) {
       prefix: "− ",
       strike: true,
     },
-    success: { row: "", num: "text-fg-faint/60", text: { color: "var(--plane-cache)", fontStyle: "italic" } },
+    success: {
+      row: "",
+      num: "text-fg-faint/60",
+      text: { color: "var(--plane-cache)", fontStyle: "italic" },
+    },
   };
 
   const st = styles[line.t];
@@ -233,20 +245,44 @@ function CodeLine({ line, n }: { line: Line; n: number }) {
 function StepIcon({ kind }: { kind: Step["icon"] }) {
   if (kind === "action")
     return (
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4">
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      >
         <ellipse cx="8" cy="4" rx="5" ry="2" />
         <path d="M3 4v8c0 1.1 2.24 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.24 2 5 2s5-.9 5-2" />
       </svg>
     );
   if (kind === "rsc")
     return (
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4">
-        <path d="M4.5 11a3 3 0 0 1-.5-5.96A4 4 0 0 1 12 5.5a2.75 2.75 0 0 1-.5 5.5" strokeLinecap="round" />
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      >
+        <path
+          d="M4.5 11a3 3 0 0 1-.5-5.96A4 4 0 0 1 12 5.5a2.75 2.75 0 0 1-.5 5.5"
+          strokeLinecap="round"
+        />
         <path d="M8 7v5m0 0L6 10m2 2 2-2" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     );
   return (
-    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4">
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+    >
       <rect x="2" y="2.5" width="12" height="8" rx="1.2" />
       <path d="M6 13.5h4M8 10.5v3" strokeLinecap="round" />
     </svg>
@@ -254,7 +290,14 @@ function StepIcon({ kind }: { kind: Step["icon"] }) {
 }
 function LockIcon() {
   return (
-    <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <svg
+      width="11"
+      height="11"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    >
       <rect x="3.5" y="7" width="9" height="6.5" rx="1.2" />
       <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
     </svg>
@@ -262,7 +305,14 @@ function LockIcon() {
 }
 function FileIcon() {
   return (
-    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4">
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+    >
       <path d="M4 1.5h5L13 5.5v9H4z" />
       <path d="M9 1.5v4h4" />
     </svg>

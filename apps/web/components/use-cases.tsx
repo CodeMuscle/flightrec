@@ -34,7 +34,10 @@ export function UseCases() {
           <div key={c.title} className="card card-hover flex flex-col p-6">
             <span
               className="pill w-fit px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider"
-              style={{ color: c.color, background: `color-mix(in srgb, ${c.color} 12%, transparent)` }}
+              style={{
+                color: c.color,
+                background: `color-mix(in srgb, ${c.color} 12%, transparent)`,
+              }}
             >
               {c.tag}
             </span>

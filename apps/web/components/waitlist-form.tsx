@@ -10,7 +10,14 @@ export function WaitlistForm() {
     return (
       <div className="card flex items-start gap-3 p-5">
         <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-accent-soft">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="var(--accent)" strokeWidth="1.8">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="var(--accent)"
+            strokeWidth="1.8"
+          >
             <path d="m3 8.5 3.5 3.5L13 4.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>

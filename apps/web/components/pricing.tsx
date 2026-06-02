@@ -123,7 +123,13 @@ function CheckIcon() {
   return (
     <svg width="15" height="15" viewBox="0 0 16 16" fill="none" className="mt-0.5 shrink-0">
       <circle cx="8" cy="8" r="8" fill="var(--accent-soft)" />
-      <path d="m5 8 2 2 4-4.5" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="m5 8 2 2 4-4.5"
+        stroke="var(--accent)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
