@@ -4,8 +4,9 @@ import { DownloadPdf } from "@/components/download-pdf";
 import { PLANE_META, type Plane } from "@/lib/fixtures";
 
 export const metadata: Metadata = {
-  title: "Flightrec — Vision",
-  description: "The vision, market, and plan behind Flightrec — the flight recorder for the Next.js App Router.",
+  title: "Vision",
+  description:
+    "The vision, market, and plan behind Flightrec — the flight recorder for the Next.js App Router.",
 };
 
 const planes = Object.keys(PLANE_META) as Plane[];
