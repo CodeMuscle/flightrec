@@ -14,8 +14,7 @@ export function SmoothLink({
     if (!href.startsWith("#")) return;
     e.preventDefault();
 
-    const stripHash = () =>
-      history.replaceState(null, "", location.pathname + location.search);
+    const stripHash = () => history.replaceState(null, "", location.pathname + location.search);
     const id = href.slice(1);
 
     if (id === "top") {

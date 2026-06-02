@@ -29,7 +29,9 @@ export function ClickToCopy({ text }: { text: string }) {
         <PackageIcon />
       </span>
       <span className="select-none">{copied ? "Copied!" : text}</span>
-      <span className={`transition ${copied ? "text-accent" : "text-fg-faint group-hover:text-accent"}`}>
+      <span
+        className={`transition ${copied ? "text-accent" : "text-fg-faint group-hover:text-accent"}`}
+      >
         {copied ? <CheckIcon /> : <CopyIcon />}
       </span>
       <span className="sr-only">{copied ? "Copied" : "Click to copy"}</span>
@@ -39,7 +41,15 @@ export function ClickToCopy({ text }: { text: string }) {
 
 function PackageIcon() {
   return (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round">
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinejoin="round"
+    >
       <path d="M8 1.6 13.5 4.5v6.9L8 14.4 2.5 11.4V4.5z" />
       <path d="M2.6 4.6 8 7.5l5.4-2.9M8 7.5v6.9" />
     </svg>
@@ -47,7 +57,14 @@ function PackageIcon() {
 }
 function CopyIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4">
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+    >
       <rect x="5.5" y="5.5" width="8" height="8" rx="1.6" />
       <path d="M3.5 10.5h-.5a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v.5" />
     </svg>
@@ -55,7 +72,15 @@ function CopyIcon() {
 }
 function CheckIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" className="text-accent">
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      className="text-accent"
+    >
       <path d="m3 8.5 3.5 3.5L13 4.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );

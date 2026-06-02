@@ -101,7 +101,11 @@ export const TICKS: Tick[] = [
     detail: "Server Action invoked with form payload.",
     route: "/posts/new",
     source: "app/posts/actions.ts:createPost",
-    action: { name: "createPost", status: "running", argsPreview: '{ title: "Shipping Flightrec" }' },
+    action: {
+      name: "createPost",
+      status: "running",
+      argsPreview: '{ title: "Shipping Flightrec" }',
+    },
   },
   {
     tick: 4,
@@ -195,10 +199,7 @@ export const TICKS: Tick[] = [
   },
 ];
 
-export const PLANE_META: Record<
-  Plane,
-  { label: string; varName: string; short: string }
-> = {
+export const PLANE_META: Record<Plane, { label: string; varName: string; short: string }> = {
   user: { label: "User action", varName: "var(--plane-user)", short: "USER" },
   action: { label: "Server Action", varName: "var(--plane-action)", short: "ACTION" },
   cache: { label: "Cache invalidation", varName: "var(--plane-cache)", short: "CACHE" },

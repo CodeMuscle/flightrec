@@ -47,7 +47,8 @@ export function Problem() {
 const DESCRIPTIONS: Record<Plane, string> = {
   user: "clicks, inputs, and navigations that start the chain",
   action: "which function ran, with what args, and its outcome",
-  cache: "updateTag / revalidateTag — classified as immediate-freshness, stale-then-refresh, or orphaned",
+  cache:
+    "updateTag / revalidateTag — classified as immediate-freshness, stale-then-refresh, or orphaned",
   rsc: "ordered Flight frames as they streamed in",
   net: "cookie writes, header mutations, and redirects",
   tree: "the client-visible nodes created, patched, and removed",
@@ -76,10 +77,7 @@ export function SixPlanes() {
             <span className="w-6 font-mono text-xs tabular-nums text-fg-faint">
               {String(i + 1).padStart(2, "0")}
             </span>
-            <span
-              className="h-9 w-1 rounded-full"
-              style={{ background: PLANE_META[p].varName }}
-            />
+            <span className="h-9 w-1 rounded-full" style={{ background: PLANE_META[p].varName }} />
             <span className="w-40 shrink-0 font-medium">{PLANE_META[p].label}</span>
             <span className="hidden font-mono text-sm text-fg-muted md:block">
               {DESCRIPTIONS[p]}
