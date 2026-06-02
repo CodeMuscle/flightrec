@@ -1,10 +1,6 @@
 "use client";
 
-// Sticky nav height (~56px) + breathing room, so a section lands a little below the top
-// rather than flush at 0 (and clears the sticky navbar).
-const SCROLL_OFFSET = 84;
-
-/** Anchor that smooth-scrolls to an in-page id, offset below the nav, without writing #hash. */
+/** Anchor that smooth-scrolls to an in-page id, centering the section in the viewport, without writing #hash. */
 export function SmoothLink({
   href,
   className,
@@ -30,11 +26,9 @@ export function SmoothLink({
 
     const el = document.getElementById(id);
     if (!el) return;
+    // center the section's content in the viewport
     const elTop = el.getBoundingClientRect().top + window.scrollY;
-    // center the section in the viewport; for sections taller than the viewport,
-    // keep the heading visible (land it just below the sticky nav) instead.
-    const centered = elTop + el.offsetHeight / 2 - window.innerHeight / 2;
-    const top = Math.min(centered, elTop - SCROLL_OFFSET);
+    const top = elTop + el.offsetHeight / 2 - window.innerHeight / 2;
     window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
     stripHash();
   };

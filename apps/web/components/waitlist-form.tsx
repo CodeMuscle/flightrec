@@ -28,20 +28,17 @@ export function WaitlistForm() {
           required
           autoComplete="email"
           placeholder="you@company.com"
-          className="pill flex-1 border border-line bg-bg-raised px-4 py-3 text-sm text-fg shadow-[var(--shadow-sm)] outline-none transition placeholder:text-fg-faint focus:border-accent"
+          className="pill flex-1 border border-line bg-bg-raised px-4 py-3 text-sm text-fg shadow-(--shadow-sm) outline-none transition placeholder:text-fg-faint focus:border-accent"
         />
         <button
           type="submit"
           disabled={pending}
-          className="pill bg-fg px-5 py-3 text-sm font-medium text-bg shadow-[var(--shadow-sm)] transition hover:opacity-90 disabled:opacity-60"
+          className="pill bg-fg px-5 py-3 text-sm font-medium text-bg shadow-(--shadow-sm) transition hover:opacity-90 disabled:opacity-60"
         >
-          {pending ? "Joining…" : "Request access"}
+          {pending ? "Joining…" : "Get access"}
         </button>
       </div>
       {state && !state.ok && <p className="px-1 text-sm text-[#c2410c]">{state.message}</p>}
-      <p className="px-1 font-mono text-xs text-fg-faint">
-        Early access is approved manually — we&apos;re onboarding the first 20.
-      </p>
     </form>
   );
 }

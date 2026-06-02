@@ -59,56 +59,62 @@ export function Pricing() {
         intro="The core SDK, inspector, and trace format are open source and free forever. Pay only for cloud collaboration."
       />
 
-      <div className="mx-auto mt-12 grid max-w-5xl grid-cols-1 gap-5 md:grid-cols-3">
-        {TIERS.map((t) => (
-          <div
-            key={t.name}
-            className="card flex flex-col p-7"
-            style={
-              t.featured
-                ? { borderColor: "color-mix(in srgb, var(--accent) 45%, transparent)", boxShadow: "var(--shadow-float)" }
-                : undefined
-            }
-          >
-            <div className="flex items-center justify-between">
-              <span className="font-semibold">{t.name}</span>
-              {t.featured && (
-                <span className="pill bg-accent-soft px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-accent">
-                  Popular
-                </span>
-              )}
-            </div>
-            <div className="mt-5 flex items-baseline gap-1.5">
-              <span className="display text-4xl">{t.price}</span>
-              {t.cadence && <span className="text-sm text-fg-faint">{t.cadence}</span>}
-            </div>
-            <p className="mt-2 text-sm text-fg-muted">{t.blurb}</p>
-
-            <a
-              href="#"
-              className={`pill mt-6 py-2.5 text-center text-sm font-medium transition ${
-                t.featured
-                  ? "bg-fg text-bg hover:opacity-90"
-                  : "border border-line bg-bg-raised text-fg hover:border-line-strong"
-              }`}
-            >
-              {t.cta}
-            </a>
-
-            <ul className="mt-7 space-y-2.5 text-sm text-fg-muted">
-              {t.features.map((f) => (
-                <li key={f} className="flex gap-2.5">
-                  <CheckIcon />
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
+      <div className="relative mt-12">
+        {/* blurred preview of the tiers */}
+        <div className="pointer-events-none select-none opacity-70 blur-md">
+          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-5 md:grid-cols-3">
+            {TIERS.map((t) => (
+              <div
+                key={t.name}
+                className="card flex flex-col p-7"
+                style={t.featured ? { boxShadow: "var(--shadow-float)" } : undefined}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold">{t.name}</span>
+                  {t.featured && (
+                    <span className="pill bg-accent-soft px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-accent">
+                      Popular
+                    </span>
+                  )}
+                </div>
+                <div className="mt-5 flex items-baseline gap-1.5">
+                  <span className="display text-4xl">{t.price}</span>
+                  {t.cadence && <span className="text-sm text-fg-faint">{t.cadence}</span>}
+                </div>
+                <p className="mt-2 text-sm text-fg-muted">{t.blurb}</p>
+                <div
+                  className={`pill mt-6 py-2.5 text-center text-sm font-medium ${
+                    t.featured ? "bg-fg text-bg" : "border border-line bg-bg-raised text-fg"
+                  }`}
+                >
+                  {t.cta}
+                </div>
+                <ul className="mt-7 space-y-2.5 text-sm text-fg-muted">
+                  {t.features.map((f) => (
+                    <li key={f} className="flex gap-2.5">
+                      <CheckIcon />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-        ))}
+          <p className="mt-6 text-center font-mono text-xs text-fg-faint">
+            Start free. No credit card required.
+          </p>
+        </div>
+
+        {/* coming-soon overlay */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="pill flex items-center gap-2.5 border border-line bg-bg-raised/85 px-7 py-3.5 shadow-(--shadow-card) backdrop-blur">
+            <span className="size-2 animate-pulse rounded-full bg-accent" />
+            <span className="text-lg font-semibold">
+              <span className="grad-text">Coming soon</span>
+            </span>
+          </div>
+        </div>
       </div>
-      <p className="mt-6 text-center font-mono text-xs text-fg-faint">
-        Start free. No credit card required.
-      </p>
     </section>
   );
 }
