@@ -27,7 +27,7 @@ export function Hero() {
 
   // mockup: starts low (only ~half visible) → zooms up to fill the text area
   const rise = clamp(p / 0.36, 0, 1);
-  const mockYvh = lerp(64, 0, rise);
+  const mockYvh = lerp(50, 0, rise);
   const mockScale = lerp(0.8, 1, rise);
   const mockOpacity = lerp(0.85, 1, clamp(p / 0.18, 0, 1));
 
@@ -50,7 +50,7 @@ export function Hero() {
             pointerEvents: textOpacity < 0.05 ? "none" : "auto",
           }}
         >
-          <div className="pill inline-flex items-center gap-2 border border-line bg-bg-raised/80 px-3.5 py-1.5 text-sm text-fg-muted shadow-[var(--shadow-sm)] backdrop-blur">
+          <div className="pill inline-flex items-center gap-2 border border-line bg-bg-raised/80 px-3.5 py-1.5 text-sm text-fg-muted shadow-(--shadow-sm) backdrop-blur">
             <span className="size-1.5 rounded-full bg-accent" />
             Introducing Flightrec
           </div>
@@ -73,13 +73,13 @@ export function Hero() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <a
               href="#"
-              className="pill bg-fg px-5 py-3 text-sm font-medium text-bg shadow-[var(--shadow-card)] transition hover:opacity-90"
+              className="pill bg-fg px-5 py-3 text-sm font-medium text-bg shadow-(--shadow-card) transition hover:opacity-90"
             >
               Try Flightrec for free
             </a>
             <a
               href="#architecture"
-              className="pill border border-line bg-bg-raised px-5 py-3 text-sm font-medium text-fg shadow-[var(--shadow-sm)] transition hover:border-line-strong"
+              className="pill border border-line bg-bg-raised px-5 py-3 text-sm font-medium text-fg shadow-(--shadow-sm) transition hover:border-line-strong"
             >
               Read the docs <span className="text-fg-faint">›</span>
             </a>
