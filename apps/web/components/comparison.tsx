@@ -36,7 +36,7 @@ export function Comparison() {
       />
 
       <div className="card mt-12 overflow-x-auto p-0">
-        <table className="w-full min-w-[820px] border-collapse text-sm">
+        <table className="w-full min-w-205 border-collapse text-sm">
           <thead>
             <tr className="border-b border-line">
               <th className="px-5 py-4 text-left font-mono text-xs font-normal uppercase tracking-wider text-fg-faint">

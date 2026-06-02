@@ -15,19 +15,14 @@ export function Architecture() {
       <SectionHeader
         eyebrow="How it works"
         title="Capture both sides. Normalize. Replay deterministically."
-        intro="Server- and client-side capture feed a normalizer, which persists locally and replays in the inspector. No shadow React runtime — a deterministic replay graph. MCP enriches; it's never the source of truth."
+        intro="Server and client-side capture feed a normalizer, which persists locally and replays in the inspector. No shadow React runtime — a deterministic replay graph. MCP enriches; it's never the source of truth."
       />
 
-      <div className="card mt-12 flex flex-col gap-3 p-6 lg:flex-row lg:items-stretch">
-        {FLOW.map((n, i) => (
-          <div key={n.id} className="flex items-center gap-3 lg:flex-1">
-            <div className="flex-1 rounded-xl border border-line bg-bg-inset/60 px-4 py-3.5">
-              <div className="font-mono text-[11px] text-accent">{n.id}</div>
-              <div className="mt-1 text-sm font-medium">{n.label}</div>
-            </div>
-            {i < FLOW.length - 1 && (
-              <span className="shrink-0 rotate-90 text-fg-faint lg:rotate-0">→</span>
-            )}
+      <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        {FLOW.map((n) => (
+          <div key={n.id} className="card flex flex-col p-4">
+            <span className="font-mono text-[11px] text-accent">{n.id}</span>
+            <span className="mt-1.5 text-sm font-medium leading-snug">{n.label}</span>
           </div>
         ))}
       </div>

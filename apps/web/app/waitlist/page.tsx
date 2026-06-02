@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Logo } from "@/components/logo";
 import { WaitlistForm } from "@/components/waitlist-form";
 import { BrandVortex } from "@/components/visuals/brand-vortex";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export const metadata: Metadata = {
   title: "Early access",
@@ -16,6 +17,9 @@ export default function Waitlist() {
         <Logo className="size-6 text-accent" />
         <span className="font-mono text-sm font-medium">flightrec</span>
       </a>
+      <div className="absolute right-6 top-6">
+        <ThemeToggle />
+      </div>
 
       <div className="grid w-full max-w-6xl items-center gap-x-16 gap-y-12 lg:grid-cols-2 lg:gap-x-24">
         {/* left — copy + form */}

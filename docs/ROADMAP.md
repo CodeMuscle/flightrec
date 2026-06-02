@@ -1,12 +1,5 @@
 # Flightrec — Build Roadmap & Blueprint
 
-
-
-
-
-
-
-
 This document turns the Master Product Document into an executable, phased plan.
 The guiding sequencing principle: **ship a credible landing page + synthetic interactive
 demo first** (traction engine), then build the real recorder/inspector behind it. The hard
@@ -16,21 +9,21 @@ engine work proceeds in parallel without blocking public momentum.
 
 ## 0. Tech Stack (decisions)
 
-| Concern | Choice | Why |
-|---|---|---|
-| Monorepo | pnpm workspaces + Turborepo | Matches the `packages/*` + `apps/*` layout in the PRD |
-| Language | TypeScript (strict) | Schema-first product; types are the contract |
-| Landing + Inspector | Next.js 15 App Router + React 19 | Dogfood the exact framework we debug |
-| UI system | Tailwind v4 + shadcn/ui + Radix | The PRD explicitly asks for a shadcn/Vercel aesthetic |
-| Animation | `motion` (Framer Motion) | Subtle, precise transitions per design guidance |
-| Diagrams | Mermaid (build-time render) | Architecture/ER diagrams from the PRD |
-| Schema/validation | Zod + inferred TS types | One source of truth for `TraceEvent`, `RscFrame`, etc. |
-| Local storage | `idb` (IndexedDB) + OPFS adapter | Two storage backends per PRD |
-| Package build | `tsup` | Fast dual ESM/CJS bundles for SDK packages |
-| Server capture | `AsyncLocalStorage` + `instrumentation.ts` | Per-request trace context without globals |
-| Testing | Vitest (unit/integration) + Playwright (E2E/visual) | Matches CI/CD workflow in PRD |
-| Tooling | Biome or ESLint+Prettier, Changesets, tsx | Lint/format, versioned releases |
-| Docs | Nextra or Fumadocs | Docs-site app in the PRD |
+| Concern             | Choice                                              | Why                                                    |
+| ------------------- | --------------------------------------------------- | ------------------------------------------------------ |
+| Monorepo            | pnpm workspaces + Turborepo                         | Matches the `packages/*` + `apps/*` layout in the PRD  |
+| Language            | TypeScript (strict)                                 | Schema-first product; types are the contract           |
+| Landing + Inspector | Next.js 15 App Router + React 19                    | Dogfood the exact framework we debug                   |
+| UI system           | Tailwind v4 + shadcn/ui + Radix                     | The PRD explicitly asks for a shadcn/Vercel aesthetic  |
+| Animation           | `motion` (Framer Motion)                            | Subtle, precise transitions per design guidance        |
+| Diagrams            | Mermaid (build-time render)                         | Architecture/ER diagrams from the PRD                  |
+| Schema/validation   | Zod + inferred TS types                             | One source of truth for `TraceEvent`, `RscFrame`, etc. |
+| Local storage       | `idb` (IndexedDB) + OPFS adapter                    | Two storage backends per PRD                           |
+| Package build       | `tsup`                                              | Fast dual ESM/CJS bundles for SDK packages             |
+| Server capture      | `AsyncLocalStorage` + `instrumentation.ts`          | Per-request trace context without globals              |
+| Testing             | Vitest (unit/integration) + Playwright (E2E/visual) | Matches CI/CD workflow in PRD                          |
+| Tooling             | Biome or ESLint+Prettier, Changesets, tsx           | Lint/format, versioned releases                        |
+| Docs                | Nextra or Fumadocs                                  | Docs-site app in the PRD                               |
 
 ---
 
@@ -71,6 +64,7 @@ Each phase lists **Deliverables**, **Exit criteria**, and **Est. duration** (sol
 Phases 1–2 are intentionally front-loaded with the public-facing surface.
 
 ### Phase 0 — Foundations (research + scaffolding) · ~1 week
+
 - Bootstrap monorepo (pnpm + Turbo + CI skeleton).
 - `trace-schema`: lock `TraceEvent`, `RscFrame`, `RscOp`, `CacheOutcome`, `Session`, `Snapshot` as Zod schemas.
 - Synthetic fixture generator: produce a deterministic 12-tick session for the 3 demo flows (blog create / stale dashboard / auth cookie). **No real recorder needed yet.**
@@ -78,6 +72,7 @@ Phases 1–2 are intentionally front-loaded with the public-facing surface.
 - **Exit:** `pnpm build` green; one golden `.frec` fixture exists; schemas published internally.
 
 ### Phase 1 — Landing page + interactive demo (traction first) · ~1.5 weeks
+
 - `docs-site` landing page (full blueprint in `docs/LANDING_PAGE.md`).
 - Interactive scrub-timeline demo driven entirely by **synthetic fixtures** from Phase 0.
 - 12-tick scrubber with synchronized panes (Server Action / cache / RSC frames / tree diff).
@@ -87,6 +82,7 @@ Phases 1–2 are intentionally front-loaded with the public-facing surface.
 - **Exit:** Public URL live; demo scrubs smoothly at 60fps; README + CONTRIBUTING shipped.
 
 ### Phase 2 — Inspector MVP (real trace rendering) · ~2 weeks
+
 - `inspector-pwa`: load a `.frec` bundle (drag-drop or URL) and render it.
 - Timeline UI, virtualized event list, tick details panel, simple before/after diff view.
 - `trace-storage-indexeddb` for persistence; `bundle-frec` import/export round-trips.
@@ -94,6 +90,7 @@ Phases 1–2 are intentionally front-loaded with the public-facing surface.
 - **Exit:** A golden `.frec` from Phase 0 renders identically to the synthetic demo; export→import is lossless.
 
 ### Phase 3 — Recorder MVP (real capture) · ~3 weeks (hardest)
+
 - `recorder-next`: `instrumentation.ts` hook + `AsyncLocalStorage` request context.
 - Capture Server Action start/end + outcome; cache `updateTag`/`revalidateTag`; redirects; cookie/header mutations.
 - `recorder-client`: client navigation + tree-diff capture (commit-phase instrumentation).
@@ -103,6 +100,7 @@ Phases 1–2 are intentionally front-loaded with the public-facing surface.
 - **Exit:** Real captured trace from `demo-playground` opens in the inspector and matches expected tick semantics; golden traces committed.
 
 ### Phase 4 — Demo quality + semantic intelligence · ~2 weeks
+
 - `source-mapper`: map events → `file:symbol`.
 - Payload explorer (protocol-level RSC/Flight view, sanitized — never eval).
 - **Cache Semantics panel**: classify each invalidation as `immediate-freshness` / `stale-then-refresh` / `no-visible-effect` / `orphaned-invalidation`.
@@ -111,12 +109,14 @@ Phases 1–2 are intentionally front-loaded with the public-facing surface.
 - **Exit:** Cache-semantics classifier passes golden-trace assertions; benchmark report generated.
 
 ### Phase 5 — Distribution + integrations · ~3 weeks
+
 - VS Code extension: tick → open file; "request latest trace for current route".
 - `mcp-adapter`: (a) Next.js MCP enrichment (resolve `actionId` via `get_server_action_by_id`, pull logs/errors/route metadata); (b) Flightrec MCP server so agents can query traces.
 - `ai-insights`: AI session summaries + auto bug reports (Claude API, with prompt caching).
 - **Exit:** Extension installs locally; MCP server answers "which Server Action caused this stale state?" against a golden trace.
 
 ### Phase 6 — Growth / scale-out · ongoing
+
 - Cloud sync alpha (optional team sharing of `.frec` bundles).
 - Browser extension overlay; desktop app (Tauri).
 - Framework expansion research (Remix / SvelteKit adapters behind the same schema).
