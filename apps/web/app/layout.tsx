@@ -8,11 +8,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const DESCRIPTION =
+  "Debugging, rewound. Flightrec records a full Next.js session as a replayable trace — Server Actions, cache invalidation, RSC payloads, cookies/headers, and the client tree — and lets you scrub it on one timeline.";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://flightrec.dev"),
-  title: "Flightrec — Time-travel debugger for Next.js App Router",
-  description:
-    "Stop guessing what went wrong. Rewind your Next.js session and inspect every state change — Server Actions, cache, RSC payloads, cookies/headers, and the client tree — with absolute clarity.",
+  title: {
+    default: "Flightrec — Time-travel debugger for the Next.js App Router",
+    template: "%s — Flightrec",
+  },
+  description: DESCRIPTION,
+  applicationName: "Flightrec",
   keywords: [
     "Next.js",
     "React Server Components",
@@ -21,12 +27,22 @@ export const metadata: Metadata = {
     "App Router",
     "cache invalidation",
     "RSC",
+    "Flight protocol",
   ],
+  authors: [{ name: "buildwithgg", url: "https://x.com/buildwithgg" }],
+  creator: "buildwithgg",
   openGraph: {
-    title: "Flightrec — Time-travel debugger for Next.js",
-    description:
-      "Rewind your Next.js session and inspect every state change with absolute clarity.",
+    title: "Flightrec — Time-travel debugger for the Next.js App Router",
+    description: DESCRIPTION,
+    url: "https://flightrec.dev",
+    siteName: "Flightrec",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Flightrec — Time-travel debugger for the Next.js App Router",
+    description: "Debugging, rewound. Rewind your Next.js session on one timeline.",
+    creator: "@buildwithgg",
   },
 };
 
