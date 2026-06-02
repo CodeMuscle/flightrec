@@ -7,14 +7,12 @@ export function Reveal({
   children,
   delay = 0,
   className = "",
-  as: Tag = "div",
 }: {
   children: React.ReactNode;
   delay?: number;
   className?: string;
-  as?: React.ElementType;
 }) {
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(false);
 
   useEffect(() => {
@@ -34,12 +32,12 @@ export function Reveal({
   }, []);
 
   return (
-    <Tag
+    <div
       ref={ref}
       className={`reveal ${shown ? "in" : ""} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
-    </Tag>
+    </div>
   );
 }
