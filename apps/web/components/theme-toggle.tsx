@@ -32,9 +32,7 @@ export function ThemeToggle() {
             aria-label={o.label}
             title={o.label}
             className={`flex size-6 items-center justify-center rounded transition ${
-              active
-                ? "bg-bg-raised text-accent shadow-sm"
-                : "text-fg-faint hover:text-fg"
+              active ? "bg-bg-raised text-accent shadow-sm" : "text-fg-faint hover:text-fg"
             }`}
           >
             <Icon />
@@ -47,9 +45,19 @@ export function ThemeToggle() {
 
 function SunIcon() {
   return (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4">
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+    >
       <circle cx="8" cy="8" r="3" />
-      <path strokeLinecap="round" d="M8 1v1.5M8 13.5V15M15 8h-1.5M2.5 8H1M12.9 3.1l-1 1M4.1 11.9l-1 1M12.9 12.9l-1-1M4.1 4.1l-1-1" />
+      <path
+        strokeLinecap="round"
+        d="M8 1v1.5M8 13.5V15M15 8h-1.5M2.5 8H1M12.9 3.1l-1 1M4.1 11.9l-1 1M12.9 12.9l-1-1M4.1 4.1l-1-1"
+      />
     </svg>
   );
 }
@@ -62,7 +70,14 @@ function MoonIcon() {
 }
 function SystemIcon() {
   return (
-    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4">
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+    >
       <rect x="1.5" y="2.5" width="13" height="9" rx="1.2" />
       <path strokeLinecap="round" d="M5.5 14h5M8 11.5V14" />
     </svg>

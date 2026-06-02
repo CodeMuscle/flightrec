@@ -134,21 +134,47 @@ export function BrandVortex() {
     >
       <div
         className="pointer-events-none absolute inset-0 m-auto size-3/4 rounded-full blur-3xl"
-        style={{ background: "radial-gradient(closest-side, rgba(111,108,240,0.28), rgba(91,182,244,0.12) 55%, transparent 72%)" }}
+        style={{
+          background:
+            "radial-gradient(closest-side, rgba(111,108,240,0.28), rgba(91,182,244,0.12) 55%, transparent 72%)",
+        }}
       />
-      <Canvas camera={{ position: [0, 0, 5.2], fov: 42 }} gl={{ alpha: true, antialias: true }} dpr={[1, 2]}>
+      <Canvas
+        camera={{ position: [0, 0, 5.2], fov: 42 }}
+        gl={{ alpha: true, antialias: true }}
+        dpr={[1, 2]}
+      >
         <ambientLight intensity={0.8} />
         <directionalLight position={[3, 4, 5]} intensity={2.6} color="#8b88ff" />
         <directionalLight position={[-4, -2, 2]} intensity={1.6} color="#5bb6f4" />
         <directionalLight position={[0, 3, -4]} intensity={1} color="#a78bfa" />
 
-        <Float speed={reduced ? 0 : 2} rotationIntensity={reduced ? 0 : 0.12} floatIntensity={reduced ? 0 : 0.7}>
+        <Float
+          speed={reduced ? 0 : 2}
+          rotationIntensity={reduced ? 0 : 0.12}
+          floatIntensity={reduced ? 0 : 0.7}
+        >
           <Glyph velRef={velRef} dragRef={dragRef} reduced={reduced} />
         </Float>
 
         {/* dust motes drifting in a sunbeam — small + slow, but saturated enough to read on white */}
-        <Sparkles count={reduced ? 45 : 90} scale={[8, 8, 5]} size={3.4} speed={reduced ? 0 : 0.25} noise={0.6} color="#7b78f0" opacity={0.75} />
-        <Sparkles count={reduced ? 22 : 40} scale={[6, 6, 4]} size={2.1} speed={reduced ? 0 : 0.16} color="#9d99ff" opacity={0.6} />
+        <Sparkles
+          count={reduced ? 45 : 90}
+          scale={[8, 8, 5]}
+          size={3.4}
+          speed={reduced ? 0 : 0.25}
+          noise={0.6}
+          color="#7b78f0"
+          opacity={0.75}
+        />
+        <Sparkles
+          count={reduced ? 22 : 40}
+          scale={[6, 6, 4]}
+          size={2.1}
+          speed={reduced ? 0 : 0.16}
+          color="#9d99ff"
+          opacity={0.6}
+        />
       </Canvas>
     </div>
   );

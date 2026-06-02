@@ -27,18 +27,25 @@ export function Hero() {
 
   // mockup: starts low (only ~half visible) → zooms up to fill the text area
   const rise = clamp(p / 0.36, 0, 1);
-  const mockYvh = lerp(50, 0, rise);
+  const mockYvh = lerp(60, 0, rise);
   const mockScale = lerp(0.8, 1, rise);
   const mockOpacity = lerp(0.85, 1, clamp(p / 0.18, 0, 1));
 
   // steps play once the mockup is in place
-  const step = clamp(Math.round(lerp(0, STEP_COUNT - 1, clamp((p - 0.38) / 0.56, 0, 1))), 0, STEP_COUNT - 1);
+  const step = clamp(
+    Math.round(lerp(0, STEP_COUNT - 1, clamp((p - 0.38) / 0.56, 0, 1))),
+    0,
+    STEP_COUNT - 1,
+  );
 
   return (
     <section ref={ref} className="relative h-[240vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* scroll progress hairline */}
-        <div className="absolute left-0 top-0 z-40 h-0.5 bg-accent" style={{ width: `${p * 100}%` }} />
+        <div
+          className="absolute left-0 top-0 z-40 h-0.5 bg-accent"
+          style={{ width: `${p * 100}%` }}
+        />
 
         {/* headline layer */}
         <div
@@ -72,7 +79,7 @@ export function Hero() {
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <a
-              href="#"
+              href="/waitlist"
               className="pill bg-fg px-5 py-3 text-sm font-medium text-bg shadow-(--shadow-card) transition hover:opacity-90"
             >
               Try Flightrec for free

@@ -15,15 +15,87 @@ type RowKey = (typeof COLS)[number]["key"];
 type Row = { cap: string } & Record<RowKey, Val>;
 
 const ROWS: Row[] = [
-  { cap: "Session-level time-travel replay", rs: true, replay: true, sentry: "partial", vercel: false, mcp: false, otel: false },
-  { cap: "Server Action causality", rs: true, replay: false, sentry: false, vercel: false, mcp: "meta", otel: "partial" },
-  { cap: "Cache invalidation semantics", rs: true, replay: false, sentry: false, vercel: false, mcp: false, otel: false },
-  { cap: "RSC / Flight payload frames", rs: true, replay: false, sentry: false, vercel: false, mcp: false, otel: false },
-  { cap: "Client tree reconciliation diff", rs: true, replay: "partial", sentry: "partial", vercel: false, mcp: false, otel: false },
-  { cap: "Cookie / header mutation trail", rs: true, replay: false, sentry: false, vercel: "partial", mcp: false, otel: "partial" },
-  { cap: "Source-mapped to your code", rs: true, replay: true, sentry: true, vercel: "partial", mcp: true, otel: false },
-  { cap: "Works offline from a bundle", rs: true, replay: false, sentry: false, vercel: false, mcp: false, otel: true },
-  { cap: "Agent-queryable (MCP) traces", rs: true, replay: false, sentry: false, vercel: false, mcp: true, otel: false },
+  {
+    cap: "Session-level time-travel replay",
+    rs: true,
+    replay: true,
+    sentry: "partial",
+    vercel: false,
+    mcp: false,
+    otel: false,
+  },
+  {
+    cap: "Server Action causality",
+    rs: true,
+    replay: false,
+    sentry: false,
+    vercel: false,
+    mcp: "meta",
+    otel: "partial",
+  },
+  {
+    cap: "Cache invalidation semantics",
+    rs: true,
+    replay: false,
+    sentry: false,
+    vercel: false,
+    mcp: false,
+    otel: false,
+  },
+  {
+    cap: "RSC / Flight payload frames",
+    rs: true,
+    replay: false,
+    sentry: false,
+    vercel: false,
+    mcp: false,
+    otel: false,
+  },
+  {
+    cap: "Client tree reconciliation diff",
+    rs: true,
+    replay: "partial",
+    sentry: "partial",
+    vercel: false,
+    mcp: false,
+    otel: false,
+  },
+  {
+    cap: "Cookie / header mutation trail",
+    rs: true,
+    replay: false,
+    sentry: false,
+    vercel: "partial",
+    mcp: false,
+    otel: "partial",
+  },
+  {
+    cap: "Source-mapped to your code",
+    rs: true,
+    replay: true,
+    sentry: true,
+    vercel: "partial",
+    mcp: true,
+    otel: false,
+  },
+  {
+    cap: "Works offline from a bundle",
+    rs: true,
+    replay: false,
+    sentry: false,
+    vercel: false,
+    mcp: false,
+    otel: true,
+  },
+  {
+    cap: "Agent-queryable (MCP) traces",
+    rs: true,
+    replay: false,
+    sentry: false,
+    vercel: false,
+    mcp: true,
+    otel: false,
+  },
 ];
 
 export function Comparison() {
@@ -51,7 +123,9 @@ export function Comparison() {
                   <div className={`text-sm font-semibold ${c.accent ? "text-accent" : "text-fg"}`}>
                     {c.label}
                   </div>
-                  <div className="mt-0.5 font-mono text-[10px] font-normal text-fg-faint">{c.note}</div>
+                  <div className="mt-0.5 font-mono text-[10px] font-normal text-fg-faint">
+                    {c.note}
+                  </div>
                 </th>
               ))}
             </tr>

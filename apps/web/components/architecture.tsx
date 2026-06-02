@@ -77,7 +77,15 @@ const COLOR: Record<string, string> = {
   "": "var(--fg)",
 };
 
-function CodeCard({ title, sub, lines }: { title: string; sub: string; lines: [string, string][] }) {
+function CodeCard({
+  title,
+  sub,
+  lines,
+}: {
+  title: string;
+  sub: string;
+  lines: [string, string][];
+}) {
   return (
     <div className="card overflow-hidden p-0">
       <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
