@@ -30,7 +30,11 @@ export function SmoothLink({
 
     const el = document.getElementById(id);
     if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+    const elTop = el.getBoundingClientRect().top + window.scrollY;
+    // center the section in the viewport; for sections taller than the viewport,
+    // keep the heading visible (land it just below the sticky nav) instead.
+    const centered = elTop + el.offsetHeight / 2 - window.innerHeight / 2;
+    const top = Math.min(centered, elTop - SCROLL_OFFSET);
     window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
     stripHash();
   };
