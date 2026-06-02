@@ -35,9 +35,9 @@ export default function Vision() {
               The flight recorder for the <span className="grad-text">App Router.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-xl leading-relaxed text-fg-muted">
-              Flightrec records a full Next.js session as a replayable trace — Server Actions, cache,
-              RSC payloads, cookies/headers, and the client tree — and lets engineers rewind it on
-              one timeline.
+              Flightrec records a full Next.js session as a replayable trace — Server Actions,
+              cache, RSC payloads, cookies/headers, and the client tree — and lets engineers rewind
+              it on one timeline.
             </p>
             <div className="mt-8 flex gap-3 font-mono text-xs text-fg-faint">
               <span>v0.1 · alpha</span>
@@ -54,7 +54,10 @@ export default function Vision() {
           <Title>App Router apps are hard to debug because the story is scattered.</Title>
           <Grid cols={4}>
             {[
-              ["State spans the boundary", "Server and client state split across two execution models."],
+              [
+                "State spans the boundary",
+                "Server and client state split across two execution models.",
+              ],
               ["Rendering is streamed", "RSC payloads arrive in chunks; the UI changes over time."],
               ["Cache is invisible", "updateTag vs revalidateTag — freshness is never surfaced."],
               ["No tool unifies it", "Logs, traces, metrics, firewall rules each see one slice."],
@@ -69,14 +72,21 @@ export default function Vision() {
 
         {/* 03 — why now */}
         <Slide n="03" total="10" eyebrow="Why now">
-          <Title>
-            The ecosystem just admitted it needs a richer debugging surface.
-          </Title>
+          <Title>The ecosystem just admitted it needs a richer debugging surface.</Title>
           <Grid cols={3}>
             {[
-              ["Server Actions are first-class", "Vercel exposes them as operational entities in firewall tooling."],
-              ["Next.js ships MCP", "next-devtools-mcp exposes errors, logs, routes, get_server_action_by_id."],
-              ["Observability ≠ replay", "Logs, traces, OTEL export — but no human-first time-travel over RSC."],
+              [
+                "Server Actions are first-class",
+                "Vercel exposes them as operational entities in firewall tooling.",
+              ],
+              [
+                "Next.js ships MCP",
+                "next-devtools-mcp exposes errors, logs, routes, get_server_action_by_id.",
+              ],
+              [
+                "Observability ≠ replay",
+                "Logs, traces, OTEL export — but no human-first time-travel over RSC.",
+              ],
             ].map(([t, b]) => (
               <Card key={t}>
                 <h3 className="text-base font-semibold">{t}</h3>
@@ -85,7 +95,8 @@ export default function Vision() {
             ))}
           </Grid>
           <p className="mt-6 max-w-3xl text-lg text-fg-muted">
-            The signals are there — Flightrec is the missing human-first replay layer on top of them.
+            The signals are there — Flightrec is the missing human-first replay layer on top of
+            them.
           </p>
         </Slide>
 
@@ -97,8 +108,13 @@ export default function Vision() {
           <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {planes.map((p, i) => (
               <div key={p} className="card flex items-center gap-3 p-4">
-                <span className="font-mono text-xs text-fg-faint">{String(i + 1).padStart(2, "0")}</span>
-                <span className="h-7 w-1 rounded-full" style={{ background: PLANE_META[p].varName }} />
+                <span className="font-mono text-xs text-fg-faint">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span
+                  className="h-7 w-1 rounded-full"
+                  style={{ background: PLANE_META[p].varName }}
+                />
                 <span className="font-medium">{PLANE_META[p].label}</span>
               </div>
             ))}
@@ -114,7 +130,10 @@ export default function Vision() {
           <Title>Scroll the session. Watch the bug happen.</Title>
           <Grid cols={3}>
             {[
-              ["Server Action", "Which function ran, with what args, and its outcome — mapped to your source."],
+              [
+                "Server Action",
+                "Which function ran, with what args, and its outcome — mapped to your source.",
+              ],
               ["RSC Payload", "Ordered Flight frames, parsed and diffed as they streamed in."],
               ["Client Patch", "The exact tree nodes created, patched, and removed on reconcile."],
             ].map(([t, b]) => (
@@ -152,21 +171,28 @@ export default function Vision() {
         <Slide n="07" total="10" eyebrow="How it works">
           <Title>Capture both sides. Normalize. Replay deterministically.</Title>
           <div className="mt-10 flex flex-col gap-3 lg:flex-row">
-            {["User interaction", "Server + client capture", "Normalize → reconcile", "IndexedDB / .frec", "Inspector replay"].map(
-              (s, i, a) => (
-                <div key={s} className="flex items-center gap-3 lg:flex-1">
-                  <div className="card flex-1 px-4 py-3.5">
-                    <div className="font-mono text-[11px] text-accent">{String(i + 1).padStart(2, "0")}</div>
-                    <div className="mt-1 text-sm font-medium">{s}</div>
+            {[
+              "User interaction",
+              "Server + client capture",
+              "Normalize → reconcile",
+              "IndexedDB / .frec",
+              "Inspector replay",
+            ].map((s, i, a) => (
+              <div key={s} className="flex items-center gap-3 lg:flex-1">
+                <div className="card flex-1 px-4 py-3.5">
+                  <div className="font-mono text-[11px] text-accent">
+                    {String(i + 1).padStart(2, "0")}
                   </div>
-                  {i < a.length - 1 && <span className="text-fg-faint">→</span>}
+                  <div className="mt-1 text-sm font-medium">{s}</div>
                 </div>
-              ),
-            )}
+                {i < a.length - 1 && <span className="text-fg-faint">→</span>}
+              </div>
+            ))}
           </div>
           <p className="mt-6 max-w-3xl text-lg text-fg-muted">
             No shadow React runtime — a deterministic replay graph with checkpoint snapshots. MCP
-            enriches; it is never the source of truth. The <code className="font-mono text-accent">.frec</code> bundle is self-contained.
+            enriches; it is never the source of truth. The{" "}
+            <code className="font-mono text-accent">.frec</code> bundle is self-contained.
           </p>
         </Slide>
 
@@ -185,7 +211,9 @@ export default function Vision() {
               <div key={p as string} className="card flex items-center gap-4 px-5 py-3.5">
                 <span className="w-20 shrink-0 font-mono text-sm text-accent">{p}</span>
                 <span className="flex-1 text-fg-muted">{t}</span>
-                <span className="font-mono text-xs text-fg-faint">{done ? "● live" : "○ planned"}</span>
+                <span className="font-mono text-xs text-fg-faint">
+                  {done ? "● live" : "○ planned"}
+                </span>
               </div>
             ))}
           </div>
@@ -196,8 +224,16 @@ export default function Vision() {
           <Title>Open-core. Free to adopt, paid to collaborate.</Title>
           <Grid cols={3}>
             {[
-              ["Free", "$0", "Local capture, all six planes, .frec, inspector. The adoption engine."],
-              ["Growth", "$299/mo", "Cloud sync, shared trace links, retention, MCP server, AI insights."],
+              [
+                "Free",
+                "$0",
+                "Local capture, all six planes, .frec, inspector. The adoption engine.",
+              ],
+              [
+                "Growth",
+                "$299/mo",
+                "Cloud sync, shared trace links, retention, MCP server, AI insights.",
+              ],
               ["Enterprise", "Custom", "SSO/SAML, self-host, audit, residency, SLA."],
             ].map(([t, price, b]) => (
               <Card key={t}>
@@ -218,19 +254,30 @@ export default function Vision() {
         {/* 10 — ask */}
         <Slide n="10" total="10" eyebrow="The ask">
           <Title>
-            Help us give the App Router its <span className="grad-text">Redux DevTools moment.</span>
+            Help us give the App Router its{" "}
+            <span className="grad-text">Redux DevTools moment.</span>
           </Title>
           <p className="mt-6 max-w-2xl text-xl text-fg-muted">
-            We&apos;re building Flightrec in the open. Star the repo, try the demo, and follow the build.
+            We&apos;re building Flightrec in the open. Star the repo, try the demo, and follow the
+            build.
           </p>
           <div className="no-print mt-8 flex flex-wrap gap-3">
-            <a href="https://github.com/CodeMuscle/flightrec" className="pill bg-fg px-5 py-3 text-sm font-medium text-bg">
+            <a
+              href="https://github.com/CodeMuscle/flightrec"
+              className="pill bg-fg px-5 py-3 text-sm font-medium text-bg"
+            >
               GitHub
             </a>
-            <a href="https://x.com/buildwithgg" className="pill border border-line bg-bg-raised px-5 py-3 text-sm font-medium text-fg">
+            <a
+              href="https://x.com/buildwithgg"
+              className="pill border border-line bg-bg-raised px-5 py-3 text-sm font-medium text-fg"
+            >
               @buildwithgg
             </a>
-            <a href="/" className="pill border border-line bg-bg-raised px-5 py-3 text-sm font-medium text-fg">
+            <a
+              href="/"
+              className="pill border border-line bg-bg-raised px-5 py-3 text-sm font-medium text-fg"
+            >
               Live demo
             </a>
           </div>
@@ -266,13 +313,17 @@ function Slide({
 
 function Title({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="display max-w-4xl text-balance text-4xl tracking-tight sm:text-5xl">{children}</h2>
+    <h2 className="display max-w-4xl text-balance text-4xl tracking-tight sm:text-5xl">
+      {children}
+    </h2>
   );
 }
 
 function Grid({ cols, children }: { cols: 3 | 4; children: React.ReactNode }) {
   return (
-    <div className={`mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 ${cols === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"}`}>
+    <div
+      className={`mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 ${cols === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"}`}
+    >
       {children}
     </div>
   );

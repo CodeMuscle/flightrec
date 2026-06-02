@@ -40,13 +40,22 @@ export function Footer() {
           <span className="font-mono text-xs text-fg-muted">flightrec</span>
         </div>
         <div className="flex items-center gap-6 font-mono text-xs text-fg-faint">
-          <SmoothLink href="#architecture" className="transition hover:text-fg">Docs</SmoothLink>
-          <a href="/vision" className="transition hover:text-fg">Vision</a>
-          <a href={REPO} className="transition hover:text-fg">GitHub</a>
+          <SmoothLink href="#architecture" className="transition hover:text-fg">
+            Docs
+          </SmoothLink>
+          <a href="/vision" className="transition hover:text-fg">
+            Vision
+          </a>
+          <a href={REPO} className="transition hover:text-fg">
+            GitHub
+          </a>
         </div>
         <span className="font-mono text-xs text-fg-faint">
           made, mostly at night, by{" "}
-          <a href={X} className="text-fg-muted underline-offset-4 transition hover:text-accent hover:underline">
+          <a
+            href={X}
+            className="text-fg-muted underline-offset-4 transition hover:text-accent hover:underline"
+          >
             @buildwithgg
           </a>
         </span>

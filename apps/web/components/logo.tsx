@@ -11,10 +11,7 @@ export function Logo({ className }: { className?: string }) {
         strokeLinejoin="round"
         opacity="0"
       />
-      <path
-        d="M11 9.5 7.5 12 11 14.5zM15.5 9.5 12 12l3.5 2.5z"
-        fill="currentColor"
-      />
+      <path d="M11 9.5 7.5 12 11 14.5zM15.5 9.5 12 12l3.5 2.5z" fill="currentColor" />
     </svg>
   );
 }

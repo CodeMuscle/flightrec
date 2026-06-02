@@ -64,7 +64,8 @@ export function Performance() {
                       }}
                     />
                     <span className="absolute inset-y-0 right-3 flex items-center font-mono text-[11px] text-fg-muted">
-                      {b.x.toFixed(2)}× <span className="ml-1 text-fg-faint">(+{Math.round((b.x - 1) * 100)}%)</span>
+                      {b.x.toFixed(2)}×{" "}
+                      <span className="ml-1 text-fg-faint">(+{Math.round((b.x - 1) * 100)}%)</span>
                     </span>
                   </div>
                 </div>
@@ -75,7 +76,9 @@ export function Performance() {
         <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {ESSENTIALS.map(([k, v]) => (
             <div key={k} className="rounded-xl border border-line bg-bg-inset/60 px-4 py-3">
-              <div className="font-mono text-[10px] uppercase tracking-wider text-fg-faint">{k}</div>
+              <div className="font-mono text-[10px] uppercase tracking-wider text-fg-faint">
+                {k}
+              </div>
               <div className="mt-1 font-mono text-xs text-fg">{v}</div>
             </div>
           ))}

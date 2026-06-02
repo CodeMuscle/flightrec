@@ -6,9 +6,25 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "format": "biome check --write .",
+    "check": "biome check .",
+    "prepare": "husky",
+    "test": "turbo test"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,jsonc}": [
+      "biome check --write --no-errors-on-unmatched"
+    ]
   },
   "devDependencies": {
-    "turbo": "^2.3.0"
+    "@biomejs/biome": "^2.4.16",
+    "@changesets/cli": "^2.31.0",
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7",
+    "turbo": "^2.3.0",
+    "vitest": "^4.1.8"
   }
 }

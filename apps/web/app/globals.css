@@ -29,8 +29,8 @@
   --grad: linear-gradient(100deg, #7b78f5 0%, #6f8df3 45%, #5bb6f4 100%);
 
   /* pastel washes (very subtle) */
-  --wash-1: rgba(124, 120, 245, 0.10);
-  --wash-2: rgba(91, 182, 244, 0.10);
+  --wash-1: rgba(124, 120, 245, 0.1);
+  --wash-2: rgba(91, 182, 244, 0.1);
   --wash-3: rgba(255, 175, 145, 0.07);
 
   /* categorical (muted on light) */
@@ -42,9 +42,11 @@
   --plane-user: #8a8a94;
 
   --shadow-sm: 0 1px 2px rgba(15, 15, 40, 0.05);
-  --shadow-card: 0 1px 2px rgba(15, 15, 40, 0.04), 0 10px 24px -10px rgba(15, 15, 50, 0.10),
+  --shadow-card:
+    0 1px 2px rgba(15, 15, 40, 0.04), 0 10px 24px -10px rgba(15, 15, 50, 0.1),
     0 28px 56px -24px rgba(15, 15, 50, 0.12);
-  --shadow-float: 0 2px 4px rgba(15, 15, 40, 0.05), 0 18px 40px -12px rgba(20, 20, 60, 0.18),
+  --shadow-float:
+    0 2px 4px rgba(15, 15, 40, 0.05), 0 18px 40px -12px rgba(20, 20, 60, 0.18),
     0 40px 80px -32px rgba(20, 20, 60, 0.22);
 
   --radius: 16px;
@@ -105,10 +107,12 @@
 }
 
 :root {
-  --font-display: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display",
-    "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
-    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display:
+    ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  --font-sans:
+    ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
 }
 
 * {
@@ -137,7 +141,9 @@ body {
     radial-gradient(50% 40% at 50% 100%, var(--wash-3), transparent 70%),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
   background-attachment: fixed;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
 
 ::selection {
@@ -180,7 +186,10 @@ body {
   user-select: none;
 }
 .card {
-  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s, border-color 0.2s;
+  transition:
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s,
+    border-color 0.2s;
 }
 .card-hover:hover {
   transform: translateY(-3px);
@@ -200,31 +209,67 @@ body {
   color: var(--accent);
 }
 
-.text-balance { text-wrap: balance; }
+.text-balance {
+  text-wrap: balance;
+}
 
 /* ---- motion ---- */
-@keyframes pulse-head { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes pulse-head {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
 
-.reveal { opacity: 0; transform: translateY(16px); }
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+}
 .reveal.in {
   opacity: 1;
   transform: none;
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  .reveal { opacity: 1; transform: none; }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-.pane-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
-.pane-scroll::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 8px; }
-.pane-scroll::-webkit-scrollbar-track { background: transparent; }
+.pane-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.pane-scroll::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 8px;
+}
+.pane-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
 
 /* ---- deck / print ---- */
 .deck-slide {
@@ -239,9 +284,16 @@ body {
   margin: 0;
 }
 @media print {
-  .no-print { display: none !important; }
-  html, body { background: #fff !important; }
-  body { background-image: none !important; }
+  .no-print {
+    display: none !important;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  body {
+    background-image: none !important;
+  }
   .deck-slide {
     min-height: auto;
     height: 100vh;
@@ -250,6 +302,11 @@ body {
     padding: 6vh 7vw;
     justify-content: center;
   }
-  .deck-slide:last-child { page-break-after: auto; }
-  .card, .surface { box-shadow: none !important; }
+  .deck-slide:last-child {
+    page-break-after: auto;
+  }
+  .card,
+  .surface {
+    box-shadow: none !important;
+  }
 }

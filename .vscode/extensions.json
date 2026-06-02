@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "biomejs.biome",
+    "bradlc.vscode-tailwindcss",
+    "vitest.explorer",
+    "usernamehw.errorlens",
+    "yoavbls.pretty-ts-errors",
+    "editorconfig.editorconfig",
+    "streetsidesoftware.code-spell-checker",
+    "bierner.markdown-mermaid"
+  ]
+}

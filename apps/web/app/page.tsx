@@ -15,13 +15,27 @@ export default function Home() {
       <Nav />
       <main className="flex-1">
         <Hero />
-        <Reveal><Problem /></Reveal>
-        <Reveal><SixPlanes /></Reveal>
-        <Reveal><UseCases /></Reveal>
-        <Reveal><Architecture /></Reveal>
-        <Reveal><Performance /></Reveal>
-        <Reveal><Comparison /></Reveal>
-        <Reveal><Pricing /></Reveal>
+        <Reveal>
+          <Problem />
+        </Reveal>
+        <Reveal>
+          <SixPlanes />
+        </Reveal>
+        <Reveal>
+          <UseCases />
+        </Reveal>
+        <Reveal>
+          <Architecture />
+        </Reveal>
+        <Reveal>
+          <Performance />
+        </Reveal>
+        <Reveal>
+          <Comparison />
+        </Reveal>
+        <Reveal>
+          <Pricing />
+        </Reveal>
         <Footer />
       </main>
     </>
