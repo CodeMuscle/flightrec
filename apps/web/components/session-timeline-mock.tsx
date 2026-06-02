@@ -96,7 +96,7 @@ export function SessionTimelineMock({ step }: { step: number }) {
         <span className="w-12" />
       </div>
 
-      <div className="flex h-[440px] flex-col sm:h-[540px] sm:flex-row">
+      <div className="flex h-110 flex-col sm:h-135 sm:flex-row">
         {/* left: timeline rail */}
         <div className="flex w-full shrink-0 flex-col border-b border-line bg-bg-inset/60 sm:w-60 sm:border-b-0 sm:border-r">
           <div className="border-b border-line px-4 py-3 font-mono text-[11px] uppercase tracking-wider text-fg-faint">
@@ -177,7 +177,7 @@ export function SessionTimelineMock({ step }: { step: number }) {
         <span className="text-fg-faint">
           cache{" "}
           <span className="text-fg-muted">updateTag(&apos;posts&apos;)</span> →{" "}
-          <span className="text-[color:var(--plane-cache)]">immediate-freshness ✓</span>
+          <span className="text-plane-cache">immediate-freshness ✓</span>
         </span>
         <span className="text-fg-faint">
           route <span className="text-fg-muted">/posts/42</span>
