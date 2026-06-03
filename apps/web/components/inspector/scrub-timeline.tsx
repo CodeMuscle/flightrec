@@ -1,6 +1,7 @@
 "use client";
 
 import type { Session } from "@flightrec/trace-schema";
+import { type MotionValue, motion, useTransform } from "motion/react";
 import { useMemo, useRef, useState } from "react";
 import { type Plane, eventLabel, planeColor, planeLanes, tickBounds } from "./lib/derive";
 
@@ -16,11 +17,13 @@ export function ScrubTimeline({
   session,
   tick,
   activePlanes,
+  head,
   onScrub,
 }: {
   session: Session;
   tick: number;
   activePlanes: ReadonlySet<Plane>;
+  head: MotionValue<number>;
   onScrub: (tick: number) => void;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -31,6 +34,10 @@ export function ScrubTimeline({
   const span = max - min || 1;
 
   const left = (t: number) => `calc(${PAD}px + ${(t - min) / span} * (100% - ${2 * PAD}px))`;
+
+  // The playhead position (0..1) is owned by the parent so autoplay can glide it
+  // independently of the committed tick; here we just map it to a CSS `left`.
+  const playheadLeft = useTransform(head, (r) => `calc(${PAD}px + ${r} * (100% - ${2 * PAD}px))`);
 
   const tickFromClientX = (clientX: number) => {
     const el = trackRef.current;
@@ -92,16 +99,16 @@ export function ScrubTimeline({
             e.currentTarget.releasePointerCapture(e.pointerId);
           }}
         >
-          {/* playhead */}
-          <div
+          {/* playhead — glides between ticks via the animated playheadLeft value */}
+          <motion.div
             className="pointer-events-none absolute top-0 bottom-0 z-20 w-px"
-            style={{ left: left(tick), background: "var(--accent)" }}
+            style={{ left: playheadLeft, background: "var(--accent)" }}
           >
             <div
               className="absolute -top-1 -translate-x-1/2 size-2 rotate-45 rounded-xs"
               style={{ background: "var(--accent)" }}
             />
-          </div>
+          </motion.div>
 
           {lanes.map((lane) => (
             <div
