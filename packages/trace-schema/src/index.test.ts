@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { RscOp, Session, SCHEMA_VERSION, TraceEvent } from "./index";
+import { RscOp, SCHEMA_VERSION, Session, TraceEvent } from "./index";
 
 describe("TraceEvent", () => {
   it("accepts a valid event", () => {
