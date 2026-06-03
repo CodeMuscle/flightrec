@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Session } from "@flightrec/trace-schema";
+import { RscOp, Session } from "@flightrec/trace-schema";
 import { blogPostSession } from "./index";
 
 describe("blogPostSession", () => {
@@ -15,4 +15,13 @@ describe("blogPostSession", () => {
     ).toBe(true));
   it("invalidates the posts cache tag", () =>
     expect(s.events.find((e) => e.phase === "cache:update-tag")?.meta?.tag).toBe("posts"));
+  it("streams schema-valid RSC ops", () => {
+    const frames = s.events.filter((e) => e.phase === "rsc:chunk");
+    expect(frames.length).toBeGreaterThan(0);
+    for (const f of frames) {
+      const ops = (f.meta?.ops ?? []) as unknown[];
+      expect(ops.length).toBeGreaterThan(0);
+      for (const op of ops) expect(RscOp.safeParse(op).success).toBe(true);
+    }
+  });
 });
