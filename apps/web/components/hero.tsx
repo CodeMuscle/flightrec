@@ -27,7 +27,7 @@ export function Hero() {
 
   // mockup: starts low (only ~half visible) → zooms up to fill the text area
   const rise = clamp(p / 0.36, 0, 1);
-  const mockYvh = lerp(74, 0, rise);
+  const mockYvh = lerp(70, 0, rise);
   const mockScale = lerp(0.8, 1, rise);
   const mockOpacity = lerp(0.85, 1, clamp(p / 0.18, 0, 1));
 
