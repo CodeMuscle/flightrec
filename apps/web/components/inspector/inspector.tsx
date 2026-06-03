@@ -14,6 +14,7 @@ import { JsonTray } from "./json-tray";
 import { FrecControls } from "./frec-controls";
 import { parseFrec } from "./lib/frec";
 import { PayloadMode } from "./center/payload-mode";
+import { CausalityMode } from "./center/causality-mode";
 
 const PLAY_MS = 650; // dwell per tick during playback
 
@@ -198,8 +199,10 @@ export function Inspector({ session: initialSession }: { session: Session }) {
             <TimelineMode session={session} tick={tick} />
           ) : mode === "diff" ? (
             <DiffMode session={session} tick={tick} />
-          ) : (
+          ) : mode === "payload" ? (
             <PayloadMode session={session} tick={tick} />
+          ) : (
+            <CausalityMode session={session} tick={tick} />
           )}
         </div>
         <div className="border-t border-line lg:col-span-2 lg:border-l-0 xl:col-span-1 xl:border-t-0 xl:border-l">
