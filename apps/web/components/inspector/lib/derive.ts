@@ -93,3 +93,45 @@ export function eventLabel(event: TraceEvent): string {
 export function filterEvents(session: Session, active: ReadonlySet<Plane>): TraceEvent[] {
   return session.events.filter((e) => active.has(planeForPhase(e.phase)));
 }
+
+/** Past events bucketed by plane — the center panes read from this. Cumulative: grows with the tick. */
+export function paneBuckets(session: Session, tick: number): Record<Plane, TraceEvent[]> {
+  const buckets = Object.fromEntries(PLANES.map((p) => [p, [] as TraceEvent[]])) as Record<
+    Plane,
+    TraceEvent[]
+  >;
+  for (const e of session.events) {
+    if (e.tick <= tick) buckets[planeForPhase(e.phase)].push(e);
+  }
+  return buckets;
+}
+
+/** A human one-liner describing what an event did — the secondary line in a pane row. */
+export function eventDetail(event: TraceEvent): string {
+  // meta is Record<string, unknown> (the schema can't know each phase's shape),
+  // so coerce values to strings at the boundary rather than reaching for `any`.
+  const meta = event.meta ?? {};
+  const m = (key: string): string => String(meta[key] ?? "?");
+  switch (event.phase) {
+    case "server-action:start":
+      return `${event.actionName ?? "action"}() started`;
+    case "server-action:end":
+      return `${event.actionName ?? "action"}() · ${m("ms")}ms ${meta.ok ? "✓" : "✗"}`;
+    case "cache:update-tag":
+      return `updateTag('${m("tag")}')`;
+    case "cache:revalidate-tag":
+      return `revalidateTag('${m("tag")}')`;
+    case "cookies:mutate":
+      return `cookie ${m("key")} = ${m("value")}`;
+    case "headers:mutate":
+      return `header ${m("key")} set`;
+    case "redirect":
+      return `→ ${meta.to ? m("to") : (event.route ?? "?")} (${m("status")})`;
+    case "rsc:chunk":
+      return `frame #${m("frameIndex")} · ${m("segment")}`;
+    case "tree:diff":
+      return event.sourceRef ?? "tree patched";
+    default:
+      return event.route ?? event.phase;
+  }
+}
