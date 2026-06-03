@@ -11,16 +11,38 @@ import { DiffMode } from "./center/diff-mode";
 import { type Mode, ModeSwitcher } from "./center/mode-switcher";
 import { ContextPanel } from "./center/context-panel";
 import { JsonTray } from "./json-tray";
+import { FrecControls } from "./frec-controls";
+import { parseFrec } from "./lib/frec";
 
 const PLAY_MS = 650; // dwell per tick during playback
 
-export function Inspector({ session }: { session: Session }) {
+export function Inspector({ session: initialSession }: { session: Session }) {
+  const [session, setSession] = useState(initialSession);
   const { min, max } = useMemo(() => tickBounds(session), [session]);
   const [tick, setTick] = useState(min);
   const [playing, setPlaying] = useState(false);
   const [activePlanes, setActivePlanes] = useState<Set<Plane>>(() => new Set(PLANES));
   const [mode, setMode] = useState<Mode>("timeline");
+  const [dragging, setDragging] = useState(false);
   const reduce = useReducedMotion();
+
+  const loadSession = useCallback((next: Session) => {
+    setSession(next);
+    setTick(tickBounds(next).min);
+    setPlaying(false);
+  }, []);
+
+  const onDrop = useCallback(
+    async (e: React.DragEvent) => {
+      e.preventDefault();
+      setDragging(false);
+      const file = e.dataTransfer.files?.[0];
+      if (!file) return;
+      const result = parseFrec(await file.text());
+      if (result.ok) loadSession(result.session);
+    },
+    [loadSession],
+  );
 
   const setClamped = useCallback((next: number) => setTick(clampTick(session, next)), [session]);
   const step = useCallback(
@@ -93,9 +115,23 @@ export function Inspector({ session }: { session: Session }) {
 
   return (
     <div
-      className="card mx-auto w-full max-w-6xl overflow-hidden"
+      className="card relative mx-auto w-full max-w-6xl overflow-hidden"
       style={{ boxShadow: "var(--shadow-float)" }}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setDragging(true);
+      }}
+      onDragLeave={() => setDragging(false)}
+      onDrop={onDrop}
     >
+      {dragging && (
+        <div className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center bg-bg/80 backdrop-blur-sm">
+          <div className="pill border-2 border-dashed border-accent px-6 py-4 font-mono text-sm text-accent">
+            Drop a .frec file to inspect
+          </div>
+        </div>
+      )}
+
       {/* ① top bar — session header */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-b border-line bg-bg-inset px-4 py-2.5">
         <span className="flex items-center gap-2 font-mono text-xs text-fg">
@@ -112,6 +148,7 @@ export function Inspector({ session }: { session: Session }) {
         <span className="font-mono text-[11px] text-fg-faint">
           tick {String(tick).padStart(2, "0")} / {String(max).padStart(2, "0")}
         </span>
+        <FrecControls session={session} onLoad={loadSession} />
       </div>
 
       {/* ② scrub timeline — the spine */}
