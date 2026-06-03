@@ -1,4 +1,4 @@
-import type { Phase, Session, TraceEvent } from "@flightrec/trace-schema";
+import type { CacheOutcome, Phase, Session, TraceEvent } from "@flightrec/trace-schema";
 
 /**
  * The timeline shows one lane per "plane" — a coarse grouping of the schema's 12
@@ -152,4 +152,61 @@ export function previousOnPlane(
     if (e.tick < tick && planeForPhase(e.phase) === plane) prev = e;
   }
   return prev;
+}
+
+/** Split a "file:symbol" source ref into its parts (symbol may be empty). */
+export function parseSourceRef(ref: string | undefined): { file: string; symbol: string } | null {
+  if (!ref) return null;
+  const i = ref.lastIndexOf(":");
+  return i === -1 ? { file: ref, symbol: "" } : { file: ref.slice(0, i), symbol: ref.slice(i + 1) };
+}
+
+/** Unique cache tags touched by cache events at or before the tick, in order. */
+export function activeCacheTags(session: Session, tick: number): string[] {
+  const tags: string[] = [];
+  for (const e of session.events) {
+    if (e.tick > tick) continue;
+    if (e.phase === "cache:update-tag" || e.phase === "cache:revalidate-tag") {
+      const tag = e.meta?.tag;
+      if (typeof tag === "string" && !tags.includes(tag)) tags.push(tag);
+    }
+  }
+  return tags;
+}
+
+/**
+ * Heuristic cache outcome at a tick: a cache write followed by a render
+ * (rsc/tree) is "immediate-freshness"; a write with nothing downstream yet is
+ * "orphaned-invalidation"; no writes → null.
+ */
+export function cacheOutcome(session: Session, tick: number): CacheOutcome | null {
+  const upTo = session.events.filter((e) => e.tick <= tick);
+  const writes = upTo.filter(
+    (e) => e.phase === "cache:update-tag" || e.phase === "cache:revalidate-tag",
+  );
+  if (writes.length === 0) return null;
+  const lastWriteTick = Math.max(...writes.map((e) => e.tick));
+  const rendered = upTo.some(
+    (e) => e.tick > lastWriteTick && (e.phase === "rsc:chunk" || e.phase === "tree:diff"),
+  );
+  return rendered ? "immediate-freshness" : "orphaned-invalidation";
+}
+
+/** Cookie/header mutations at or before the tick. */
+export function mutations(
+  session: Session,
+  tick: number,
+): { kind: "cookie" | "header"; key: string; value: string }[] {
+  const out: { kind: "cookie" | "header"; key: string; value: string }[] = [];
+  for (const e of session.events) {
+    if (e.tick > tick) continue;
+    if (e.phase === "cookies:mutate" || e.phase === "headers:mutate") {
+      out.push({
+        kind: e.phase === "cookies:mutate" ? "cookie" : "header",
+        key: String(e.meta?.key ?? "?"),
+        value: String(e.meta?.value ?? ""),
+      });
+    }
+  }
+  return out;
 }
