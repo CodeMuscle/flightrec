@@ -1,4 +1,5 @@
 import type { CacheOutcome, Phase, Session, TraceEvent } from "@flightrec/trace-schema";
+import { RscOp } from "@flightrec/trace-schema";
 
 /**
  * The timeline shows one lane per "plane" — a coarse grouping of the schema's 12
@@ -209,4 +210,21 @@ export function mutations(
     }
   }
   return out;
+}
+
+/** The rsc:chunk frames streamed at or before the tick. */
+export function rscFramesUpTo(session: Session, tick: number): TraceEvent[] {
+  return session.events.filter((e) => e.phase === "rsc:chunk" && e.tick <= tick);
+}
+
+/** Parse + schema-validate a frame's normalized ops; bad ops are dropped, never thrown. */
+export function frameOps(event: TraceEvent): RscOp[] {
+  const raw = event.meta?.ops;
+  if (!Array.isArray(raw)) return [];
+  const ops: RscOp[] = [];
+  for (const o of raw) {
+    const parsed = RscOp.safeParse(o);
+    if (parsed.success) ops.push(parsed.data);
+  }
+  return ops;
 }

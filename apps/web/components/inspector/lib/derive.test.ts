@@ -18,6 +18,8 @@ import {
   cacheOutcome,
   activeCacheTags,
   parseSourceRef,
+  rscFramesUpTo,
+  frameOps,
 } from "./derive";
 
 const session = blogPostSession();
@@ -185,5 +187,18 @@ describe("mutations", () => {
   it("lists cookie/header mutations up to the tick", () => {
     expect(mutations(session, 4)).toHaveLength(0);
     expect(mutations(session, 5)).toEqual([{ kind: "cookie", key: "last_post", value: "42" }]);
+  });
+});
+
+describe("rscFramesUpTo / frameOps", () => {
+  it("collects frames up to the tick", () => {
+    expect(rscFramesUpTo(session, 7)).toHaveLength(0);
+    expect(rscFramesUpTo(session, 8)).toHaveLength(1);
+    expect(rscFramesUpTo(session, 11)).toHaveLength(2);
+  });
+  it("parses schema-valid ops from the first frame", () => {
+    const ops = frameOps(rscFramesUpTo(session, 8)[0]);
+    expect(ops.length).toBeGreaterThan(0);
+    expect(ops[0].type).toBe("node-create");
   });
 });
