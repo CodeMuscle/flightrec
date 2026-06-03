@@ -20,6 +20,7 @@ import {
   parseSourceRef,
   rscFramesUpTo,
   frameOps,
+  causalChain,
 } from "./derive";
 
 const session = blogPostSession();
@@ -200,5 +201,18 @@ describe("rscFramesUpTo / frameOps", () => {
     const ops = frameOps(rscFramesUpTo(session, 8)[0]);
     expect(ops.length).toBeGreaterThan(0);
     expect(ops[0].type).toBe("node-create");
+  });
+});
+
+describe("causalChain", () => {
+  it("extends as the tick advances", () => {
+    const reached = (t: number) => causalChain(session, t).filter((n) => n.reached).length;
+    expect(reached(0)).toBe(1); // user only
+    expect(reached(6)).toBe(3); // user, action, cache
+    expect(reached(11)).toBe(6); // all planes
+  });
+  it("carries each plane's latest event", () => {
+    const action = causalChain(session, 11).find((n) => n.plane === "action");
+    expect(action?.event?.phase).toBe("server-action:end");
   });
 });
