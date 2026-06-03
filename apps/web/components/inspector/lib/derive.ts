@@ -238,3 +238,37 @@ export function causalChain(session: Session, tick: number): CausalNode[] {
     return { plane, event: events[events.length - 1], reached: events.length > 0 };
   });
 }
+
+// Presentation
+
+/** A plain-English narration of an event — the presentation-mode sentence. */
+export function narrate(event: TraceEvent): string {
+  const meta = event.meta ?? {};
+  const m = (key: string): string => String(meta[key] ?? "");
+  switch (event.phase) {
+    case "user-input":
+      return "The user interacts with the page.";
+    case "client-navigation":
+      return `The client navigates${event.route ? ` to ${event.route}` : ""}.`;
+    case "server-action:start":
+      return `The ${event.actionName ?? "server"} action starts running on the server.`;
+    case "server-action:end":
+      return `${event.actionName ?? "The action"} finishes${m("ms") ? ` in ${m("ms")}ms` : ""}.`;
+    case "cache:update-tag":
+      return `The "${m("tag")}" cache tag is invalidated.`;
+    case "cache:revalidate-tag":
+      return `The "${m("tag")}" cache tag is revalidated.`;
+    case "cookies:mutate":
+      return `A cookie (${m("key")}) is written.`;
+    case "headers:mutate":
+      return `A response header (${m("key")}) is set.`;
+    case "redirect":
+      return `The app redirects to ${m("to") || event.route || "a new route"}.`;
+    case "rsc:chunk":
+      return `An RSC frame streams in for ${m("segment") || "the route"}.`;
+    case "tree:diff":
+      return "The client React tree is patched to match the new payload.";
+    default:
+      return "An error occurred during the flow.";
+  }
+}
