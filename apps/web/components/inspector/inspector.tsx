@@ -9,6 +9,7 @@ import { PLANES, type Plane, clampTick, tickBounds } from "./lib/derive";
 import { ScrubTimeline } from "./scrub-timeline";
 import { DiffMode } from "./center/diff-mode";
 import { type Mode, ModeSwitcher } from "./center/mode-switcher";
+import { ContextPanel } from "./center/context-panel";
 
 const PLAY_MS = 650; // dwell per tick during playback
 
@@ -142,8 +143,8 @@ export function Inspector({ session }: { session: Session }) {
         </span>
       </div>
 
-      {/* ③ event index + ④ center timeline mode */}
-      <div className="grid border-t border-line lg:grid-cols-[minmax(0,18rem)_1fr]">
+      {/* ③ event index · ④ center mode · ⑤ context */}
+      <div className="grid border-t border-line lg:grid-cols-[minmax(0,17rem)_1fr] xl:grid-cols-[minmax(0,17rem)_1fr_minmax(0,19rem)]">
         <div className="border-b border-line lg:border-b-0 lg:border-r">
           <EventIndex
             session={session}
@@ -153,11 +154,16 @@ export function Inspector({ session }: { session: Session }) {
             onSelect={setClamped}
           />
         </div>
-        {mode === "timeline" ? (
-          <TimelineMode session={session} tick={tick} />
-        ) : (
-          <DiffMode session={session} tick={tick} />
-        )}
+        <div className="min-w-0">
+          {mode === "timeline" ? (
+            <TimelineMode session={session} tick={tick} />
+          ) : (
+            <DiffMode session={session} tick={tick} />
+          )}
+        </div>
+        <div className="border-t border-line lg:col-span-2 lg:border-l-0 xl:col-span-1 xl:border-t-0 xl:border-l">
+          <ContextPanel session={session} tick={tick} />
+        </div>
       </div>
     </div>
   );

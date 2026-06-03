@@ -14,6 +14,10 @@ import {
   eventDetail,
   eventsAtTick,
   previousOnPlane,
+  mutations,
+  cacheOutcome,
+  activeCacheTags,
+  parseSourceRef,
 } from "./derive";
 
 const session = blogPostSession();
@@ -148,5 +152,38 @@ describe("previousOnPlane", () => {
   it("finds the latest earlier event on a plane", () => {
     expect(previousOnPlane(session, "action", 6)?.tick).toBe(5); // cookies:mutate, before the :end at 6
     expect(previousOnPlane(session, "action", 3)).toBeUndefined();
+  });
+});
+
+describe("parseSourceRef", () => {
+  it("splits file:symbol, null on undefined", () => {
+    expect(parseSourceRef("app/posts/actions.ts:createPost")).toEqual({
+      file: "app/posts/actions.ts",
+      symbol: "createPost",
+    });
+    expect(parseSourceRef(undefined)).toBeNull();
+  });
+});
+
+describe("activeCacheTags", () => {
+  it("accumulates unique tags up to the tick", () => {
+    expect(activeCacheTags(session, 3)).toEqual([]);
+    expect(activeCacheTags(session, 4)).toEqual(["posts"]);
+    expect(activeCacheTags(session, 11)).toEqual(["posts"]);
+  });
+});
+
+describe("cacheOutcome", () => {
+  it("flips orphaned → fresh once a render lands", () => {
+    expect(cacheOutcome(session, 0)).toBeNull();
+    expect(cacheOutcome(session, 4)).toBe("orphaned-invalidation");
+    expect(cacheOutcome(session, 11)).toBe("immediate-freshness");
+  });
+});
+
+describe("mutations", () => {
+  it("lists cookie/header mutations up to the tick", () => {
+    expect(mutations(session, 4)).toHaveLength(0);
+    expect(mutations(session, 5)).toEqual([{ kind: "cookie", key: "last_post", value: "42" }]);
   });
 });
