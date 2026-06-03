@@ -135,3 +135,21 @@ export function eventDetail(event: TraceEvent): string {
       return event.route ?? event.phase;
   }
 }
+
+/** Events landing exactly on a given tick (usually one; the schema allows several). */
+export function eventsAtTick(session: Session, tick: number): TraceEvent[] {
+  return session.events.filter((e) => e.tick === tick);
+}
+
+/** The most recent event on a plane strictly before `tick` — the "before" in a diff. */
+export function previousOnPlane(
+  session: Session,
+  plane: Plane,
+  tick: number,
+): TraceEvent | undefined {
+  let prev: TraceEvent | undefined;
+  for (const e of session.events) {
+    if (e.tick < tick && planeForPhase(e.phase) === plane) prev = e;
+  }
+  return prev;
+}
