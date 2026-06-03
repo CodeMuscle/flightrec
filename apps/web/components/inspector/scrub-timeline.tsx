@@ -2,7 +2,7 @@
 
 import type { Session } from "@flightrec/trace-schema";
 import { useMemo, useRef, useState } from "react";
-import { eventLabel, planeColor, planeLanes, tickBounds } from "./lib/derive";
+import { type Plane, eventLabel, planeColor, planeLanes, tickBounds } from "./lib/derive";
 
 const PAD = 10; // px inset so first/last dots clear the track edges
 const ROW_H = 28; // px per lane row — labels + track share this so they align
@@ -15,10 +15,12 @@ const ROW_H = 28; // px per lane row — labels + track share this so they align
 export function ScrubTimeline({
   session,
   tick,
+  activePlanes,
   onScrub,
 }: {
   session: Session;
   tick: number;
+  activePlanes: ReadonlySet<Plane>;
   onScrub: (tick: number) => void;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -56,7 +58,11 @@ export function ScrubTimeline({
             <div
               key={lane.plane}
               className="flex items-center justify-end font-mono text-[11px]"
-              style={{ height: ROW_H, color: planeColor(lane.plane) }}
+              style={{
+                height: ROW_H,
+                color: planeColor(lane.plane),
+                opacity: activePlanes.has(lane.plane) ? 1 : 0.3,
+              }}
             >
               {lane.plane}
             </div>
@@ -98,7 +104,11 @@ export function ScrubTimeline({
           </div>
 
           {lanes.map((lane) => (
-            <div key={lane.plane} className="relative" style={{ height: ROW_H }}>
+            <div
+              key={lane.plane}
+              className="relative"
+              style={{ height: ROW_H, opacity: activePlanes.has(lane.plane) ? 1 : 0.18 }}
+            >
               {/* rail */}
               <div
                 className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2"

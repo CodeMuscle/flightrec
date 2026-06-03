@@ -3,14 +3,9 @@
 import type { Session } from "@flightrec/trace-schema";
 import { useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  clampTick,
-  eventAtTick,
-  eventLabel,
-  planeColor,
-  planeForPhase,
-  tickBounds,
-} from "./lib/derive";
+import { TimelineMode } from "./center/timeline-mode";
+import { EventIndex } from "./event-index";
+import { PLANES, type Plane, clampTick, tickBounds } from "./lib/derive";
 import { ScrubTimeline } from "./scrub-timeline";
 
 const PLAY_MS = 650; // dwell per tick during playback
@@ -19,12 +14,10 @@ export function Inspector({ session }: { session: Session }) {
   const { min, max } = useMemo(() => tickBounds(session), [session]);
   const [tick, setTick] = useState(min);
   const [playing, setPlaying] = useState(false);
+  const [activePlanes, setActivePlanes] = useState<Set<Plane>>(() => new Set(PLANES));
   const reduce = useReducedMotion();
 
-  const setClamped = useCallback(
-    (next: number) => setTick((t) => clampTick(session, typeof next === "number" ? next : t)),
-    [session],
-  );
+  const setClamped = useCallback((next: number) => setTick(clampTick(session, next)), [session]);
   const step = useCallback(
     (delta: number) => {
       setPlaying(false);
@@ -33,15 +26,21 @@ export function Inspector({ session }: { session: Session }) {
     [session],
   );
 
-  // playback loop — disabled under reduced-motion (no auto-advancing motion).
-  // The advance + auto-stop happen inside the timeout (async), never synchronously
-  // in the effect body, so we don't trigger cascading renders.
+  const togglePlane = useCallback((plane: Plane) => {
+    setActivePlanes((prev) => {
+      const next = new Set(prev);
+      if (next.has(plane)) next.delete(plane);
+      else next.add(plane);
+      return next;
+    });
+  }, []);
+
   useEffect(() => {
     if (!playing || reduce || tick >= max) return;
     const id = setTimeout(() => {
-      const next = clampTick(session, tick + 1);
-      setTick(next);
-      if (next >= max) setPlaying(false);
+      const nextTick = clampTick(session, tick + 1);
+      setTick(nextTick);
+      if (nextTick >= max) setPlaying(false);
     }, PLAY_MS);
     return () => clearTimeout(id);
   }, [playing, reduce, tick, max, session]);
@@ -56,7 +55,6 @@ export function Inspector({ session }: { session: Session }) {
     }
   }, [reduce, tick, max, min, setClamped]);
 
-  // keyboard transport — the timeline is the single source of "current tick".
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       switch (e.key) {
@@ -88,8 +86,6 @@ export function Inspector({ session }: { session: Session }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [step, setClamped, min, max, togglePlay]);
 
-  const current = eventAtTick(session, tick);
-
   return (
     <div
       className="card mx-auto w-full max-w-6xl overflow-hidden"
@@ -111,9 +107,14 @@ export function Inspector({ session }: { session: Session }) {
       </div>
 
       {/* ② scrub timeline — the spine */}
-      <ScrubTimeline session={session} tick={tick} onScrub={setClamped} />
+      <ScrubTimeline
+        session={session}
+        tick={tick}
+        activePlanes={activePlanes}
+        onScrub={setClamped}
+      />
 
-      {/* transport + current-event readout (slim; full panes land in later modules) */}
+      {/* transport */}
       <div className="flex flex-wrap items-center gap-3 border-t border-line bg-bg-raised px-4 py-3">
         <Transport
           onFirst={() => {
@@ -130,35 +131,23 @@ export function Inspector({ session }: { session: Session }) {
           playing={playing}
           canPlay={!reduce}
         />
-
-        <div className="mx-1 h-5 w-px bg-line" />
-
-        {current ? (
-          <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
-            <span
-              className="pill px-2 py-0.5 font-mono text-[11px]"
-              style={{
-                color: planeColor(planeForPhase(current.phase)),
-                background: "color-mix(in srgb, currentColor 12%, transparent)",
-              }}
-            >
-              {planeForPhase(current.phase)}
-            </span>
-            <span className="font-mono text-xs text-fg">{eventLabel(current)}</span>
-            <span className="font-mono text-[11px] text-fg-faint">+{current.ts}ms</span>
-            {current.sourceRef && (
-              <span className="truncate font-mono text-[11px] text-fg-muted">
-                {current.sourceRef}
-              </span>
-            )}
-          </div>
-        ) : (
-          <span className="font-mono text-[11px] text-fg-faint">— no event on this tick —</span>
-        )}
-
         <span className="ml-auto hidden font-mono text-[11px] text-fg-faint sm:inline">
-          ← → step · space play
+          ← → step · space play · click a row to jump
         </span>
+      </div>
+
+      {/* ③ event index + ④ center timeline mode */}
+      <div className="grid border-t border-line lg:grid-cols-[minmax(0,18rem)_1fr]">
+        <div className="border-b border-line lg:border-b-0 lg:border-r">
+          <EventIndex
+            session={session}
+            tick={tick}
+            activePlanes={activePlanes}
+            onToggle={togglePlane}
+            onSelect={setClamped}
+          />
+        </div>
+        <TimelineMode session={session} tick={tick} />
       </div>
     </div>
   );
