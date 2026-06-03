@@ -3,7 +3,7 @@
 export const MODES = ["timeline", "diff", "causality", "payload", "presentation"] as const;
 export type Mode = (typeof MODES)[number];
 
-const ENABLED = new Set<Mode>(["timeline", "diff", "payload", "causality"]);
+const ENABLED = new Set<Mode>(MODES);
 
 export function ModeSwitcher({ mode, onMode }: { mode: Mode; onMode: (m: Mode) => void }) {
   return (

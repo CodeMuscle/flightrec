@@ -31,6 +31,19 @@ export function Nav() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <a
+            href="/docs"
+            className="hidden font-mono text-xs text-fg-muted transition hover:text-fg sm:inline"
+          >
+            Docs
+          </a>
+          <a
+            href="/inspector"
+            className="flex items-center gap-1.5 rounded-md border border-accent/40 bg-accent-soft px-3 py-1.5 font-mono text-xs text-accent-dim transition hover:border-accent"
+          >
+            <span aria-hidden>▶</span>
+            <span className="hidden sm:inline">Live demo</span>
+          </a>
           <ThemeToggle />
           <a
             href="https://github.com/CodeMuscle/flightrec"

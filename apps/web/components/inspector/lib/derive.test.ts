@@ -21,6 +21,7 @@ import {
   rscFramesUpTo,
   frameOps,
   causalChain,
+  narrate,
 } from "./derive";
 
 const session = blogPostSession();
@@ -214,5 +215,15 @@ describe("causalChain", () => {
   it("carries each plane's latest event", () => {
     const action = causalChain(session, 11).find((n) => n.plane === "action");
     expect(action?.event?.phase).toBe("server-action:end");
+  });
+});
+
+describe("narrate", () => {
+  it("describes key phases in plain English", () => {
+    const cache = session.events.find((e) => e.phase === "cache:update-tag")!;
+    const action = session.events.find((e) => e.phase === "server-action:start")!;
+    expect(narrate(cache)).toContain("posts");
+    expect(narrate(cache).toLowerCase()).toContain("invalidate");
+    expect(narrate(action)).toContain("createPost");
   });
 });
