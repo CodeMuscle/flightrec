@@ -1,4 +1,9 @@
-import { Session, type Session as SessionT, type TraceEvent } from "@flightrec/trace-schema";
+import {
+  Session,
+  type RscOp,
+  type Session as SessionT,
+  type TraceEvent,
+} from "@flightrec/trace-schema";
 
 const SID = "ses_8f31a0";
 
@@ -31,12 +36,30 @@ export function blogPostSession(): SessionT {
     ev(7, 3640, "redirect", { route: "/posts/42", meta: { status: 303, to: "/posts/42" } }),
     ev(8, 3710, "rsc:chunk", {
       route: "/posts/42",
-      meta: { frameIndex: 0, segment: "posts/[id]" },
+      meta: {
+        frameIndex: 0,
+        segment: "posts/[id]",
+        ops: [
+          { type: "node-create", nodeId: "n0", label: "<PostLayout>" },
+          { type: "node-create", nodeId: "n1", parentId: "n0", label: "<Suspense>" },
+          { type: "suspend", nodeId: "n1" },
+        ] satisfies RscOp[],
+      },
     }),
     ev(9, 3880, "rsc:chunk", {
       route: "/posts/42",
-      meta: { frameIndex: 1, segment: "posts/[id]/page" },
+      meta: {
+        frameIndex: 1,
+        segment: "posts/[id]/page",
+        ops: [
+          { type: "resolve", nodeId: "n1" },
+          { type: "node-create", nodeId: "n2", parentId: "n1", label: "<PostView>" },
+          { type: "node-create", nodeId: "n3", parentId: "n2", label: "<h1>" },
+          { type: "prop-patch", nodeId: "n3", key: "children", nextValue: "Shipping Flightrec" },
+        ] satisfies RscOp[],
+      },
     }),
+
     ev(10, 4020, "tree:diff", {
       route: "/posts/42",
       sourceRef: "app/posts/[id]/page.tsx:PostTitle",
