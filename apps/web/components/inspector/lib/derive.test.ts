@@ -10,6 +10,8 @@ import {
   planeForPhase,
   planeLanes,
   tickBounds,
+  paneBuckets,
+  eventDetail,
 } from "./derive";
 
 const session = blogPostSession();
@@ -104,5 +106,31 @@ describe("filterEvents", () => {
   it("keeps only events on the active planes", () => {
     expect(filterEvents(session, new Set(["action"]))).toHaveLength(3); // ticks 3, 5, 6
     expect(filterEvents(session, new Set(["user", "tree"]))).toHaveLength(5); // 3 + 2
+  });
+});
+
+describe("paneBuckets", () => {
+  it("buckets cumulative past events by plane", () => {
+    const at6 = paneBuckets(session, 6);
+    expect(at6.action).toHaveLength(3); // ticks 3, 5, 6
+    expect(at6.cache).toHaveLength(1); // tick 4
+    expect(at6.net).toHaveLength(0);
+    expect(at6.rsc).toHaveLength(0);
+  });
+
+  it("is empty before the first event and full at the end", () => {
+    expect(paneBuckets(session, -1).user).toHaveLength(0);
+    const end = paneBuckets(session, 11);
+    const total = PLANES.reduce((n, p) => n + end[p].length, 0);
+    expect(total).toBe(session.events.length);
+  });
+});
+
+describe("eventDetail", () => {
+  it("describes a cache update and a redirect", () => {
+    const cache = session.events.find((e) => e.phase === "cache:update-tag")!;
+    const redirect = session.events.find((e) => e.phase === "redirect")!;
+    expect(eventDetail(cache)).toBe("updateTag('posts')");
+    expect(eventDetail(redirect)).toContain("/posts/42");
   });
 });
