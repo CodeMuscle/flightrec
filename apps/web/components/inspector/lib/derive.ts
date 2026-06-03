@@ -228,3 +228,13 @@ export function frameOps(event: TraceEvent): RscOp[] {
   }
   return ops;
 }
+
+export type CausalNode = { plane: Plane; event: TraceEvent | undefined; reached: boolean };
+
+/** The session read as a causal chain: each plane's latest event at or before the tick. */
+export function causalChain(session: Session, tick: number): CausalNode[] {
+  return PLANES.map((plane) => {
+    const events = session.events.filter((e) => planeForPhase(e.phase) === plane && e.tick <= tick);
+    return { plane, event: events[events.length - 1], reached: events.length > 0 };
+  });
+}
