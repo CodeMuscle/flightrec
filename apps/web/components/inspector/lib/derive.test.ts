@@ -12,6 +12,8 @@ import {
   tickBounds,
   paneBuckets,
   eventDetail,
+  eventsAtTick,
+  previousOnPlane,
 } from "./derive";
 
 const session = blogPostSession();
@@ -132,5 +134,19 @@ describe("eventDetail", () => {
     const redirect = session.events.find((e) => e.phase === "redirect")!;
     expect(eventDetail(cache)).toBe("updateTag('posts')");
     expect(eventDetail(redirect)).toContain("/posts/42");
+  });
+});
+
+describe("eventsAtTick", () => {
+  it("returns the event(s) on a tick, empty past the end", () => {
+    expect(eventsAtTick(session, 3).map((e) => e.phase)).toEqual(["server-action:start"]);
+    expect(eventsAtTick(session, 99)).toHaveLength(0);
+  });
+});
+
+describe("previousOnPlane", () => {
+  it("finds the latest earlier event on a plane", () => {
+    expect(previousOnPlane(session, "action", 6)?.tick).toBe(5); // cookies:mutate, before the :end at 6
+    expect(previousOnPlane(session, "action", 3)).toBeUndefined();
   });
 });

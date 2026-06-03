@@ -7,6 +7,8 @@ import { TimelineMode } from "./center/timeline-mode";
 import { EventIndex } from "./event-index";
 import { PLANES, type Plane, clampTick, tickBounds } from "./lib/derive";
 import { ScrubTimeline } from "./scrub-timeline";
+import { DiffMode } from "./center/diff-mode";
+import { type Mode, ModeSwitcher } from "./center/mode-switcher";
 
 const PLAY_MS = 650; // dwell per tick during playback
 
@@ -15,6 +17,7 @@ export function Inspector({ session }: { session: Session }) {
   const [tick, setTick] = useState(min);
   const [playing, setPlaying] = useState(false);
   const [activePlanes, setActivePlanes] = useState<Set<Plane>>(() => new Set(PLANES));
+  const [mode, setMode] = useState<Mode>("timeline");
   const reduce = useReducedMotion();
 
   const setClamped = useCallback((next: number) => setTick(clampTick(session, next)), [session]);
@@ -101,7 +104,10 @@ export function Inspector({ session }: { session: Session }) {
         {session.nextVersion && (
           <span className="font-mono text-[11px] text-fg-faint">next {session.nextVersion}</span>
         )}
-        <span className="ml-auto font-mono text-[11px] text-fg-faint">
+        <div className="mx-auto">
+          <ModeSwitcher mode={mode} onMode={setMode} />
+        </div>
+        <span className="font-mono text-[11px] text-fg-faint">
           tick {String(tick).padStart(2, "0")} / {String(max).padStart(2, "0")}
         </span>
       </div>
@@ -147,7 +153,11 @@ export function Inspector({ session }: { session: Session }) {
             onSelect={setClamped}
           />
         </div>
-        <TimelineMode session={session} tick={tick} />
+        {mode === "timeline" ? (
+          <TimelineMode session={session} tick={tick} />
+        ) : (
+          <DiffMode session={session} tick={tick} />
+        )}
       </div>
     </div>
   );
