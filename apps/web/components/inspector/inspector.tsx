@@ -10,6 +10,7 @@ import { ScrubTimeline } from "./scrub-timeline";
 import { DiffMode } from "./center/diff-mode";
 import { type Mode, ModeSwitcher } from "./center/mode-switcher";
 import { ContextPanel } from "./center/context-panel";
+import { JsonTray } from "./json-tray";
 
 const PLAY_MS = 650; // dwell per tick during playback
 
@@ -165,6 +166,9 @@ export function Inspector({ session }: { session: Session }) {
           <ContextPanel session={session} tick={tick} />
         </div>
       </div>
+
+      {/* ⑥ raw JSON tray */}
+      <JsonTray session={session} tick={tick} />
     </div>
   );
 }
