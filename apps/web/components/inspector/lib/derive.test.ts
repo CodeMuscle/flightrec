@@ -5,6 +5,7 @@ import {
   clampTick,
   eventAtTick,
   eventsUpTo,
+  filterEvents,
   PLANES,
   planeForPhase,
   planeLanes,
@@ -88,5 +89,20 @@ describe("planeLanes", () => {
     // the createPost:start at tick 3 is past; the :end at tick 6 is future.
     expect(action.dots.find((d) => d.event.tick === 3)?.isPast).toBe(true);
     expect(action.dots.find((d) => d.event.tick === 6)?.isPast).toBe(false);
+  });
+});
+
+describe("filterEvents", () => {
+  it("returns everything when all planes are active", () => {
+    expect(filterEvents(session, new Set(PLANES))).toHaveLength(session.events.length);
+  });
+
+  it("returns nothing when no plane is active", () => {
+    expect(filterEvents(session, new Set())).toHaveLength(0);
+  });
+
+  it("keeps only events on the active planes", () => {
+    expect(filterEvents(session, new Set(["action"]))).toHaveLength(3); // ticks 3, 5, 6
+    expect(filterEvents(session, new Set(["user", "tree"]))).toHaveLength(5); // 3 + 2
   });
 });

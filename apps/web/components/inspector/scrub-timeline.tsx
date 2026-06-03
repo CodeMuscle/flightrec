@@ -92,7 +92,7 @@ export function ScrubTimeline({
             style={{ left: left(tick), background: "var(--accent)" }}
           >
             <div
-              className="absolute -top-1 -translate-x-1/2 size-2 rotate-45 rounded-[2px]"
+              className="absolute -top-1 -translate-x-1/2 size-2 rotate-45 rounded-xs"
               style={{ background: "var(--accent)" }}
             />
           </div>
