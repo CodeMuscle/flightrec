@@ -84,3 +84,12 @@ export function eventLabel(event: TraceEvent): string {
   if (event.actionName) return event.actionName;
   return event.phase;
 }
+
+/**
+ * Filtering is a lens, not state: given the planes currently toggled on, return
+ * the events on those planes. Time (currentTick) is unaffected — you can filter
+ * while parked on any tick. An empty set means "nothing on" → no events.
+ */
+export function filterEvents(session: Session, active: ReadonlySet<Plane>): TraceEvent[] {
+  return session.events.filter((e) => active.has(planeForPhase(e.phase)));
+}
