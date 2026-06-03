@@ -79,18 +79,24 @@ export function Hero() {
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <a
-              href="/waitlist"
+              href="/inspector"
               className="pill bg-fg px-5 py-3 text-sm font-medium text-bg shadow-(--shadow-card) transition hover:opacity-90"
             >
-              Try Flightrec for free
+              Try the live demo
             </a>
             <a
-              href="#architecture"
+              href="/waitlist"
               className="pill border border-line bg-bg-raised px-5 py-3 text-sm font-medium text-fg shadow-(--shadow-sm) transition hover:border-line-strong"
             >
-              Read the docs <span className="text-fg-faint">›</span>
+              Get early access
             </a>
           </div>
+          <a
+            href="/docs"
+            className="mt-4 font-mono text-xs text-fg-muted underline-offset-4 transition hover:text-fg hover:underline"
+          >
+            Read the docs ›
+          </a>
         </div>
 
         {/* product mockup — starts low + half-visible, rises & zooms to center */}

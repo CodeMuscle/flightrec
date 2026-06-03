@@ -1,5 +1,4 @@
 import { Logo } from "./logo";
-import { SmoothLink } from "./smooth-link";
 
 const REPO = "https://github.com/CodeMuscle/flightrec";
 const X = "https://x.com/buildwithgg";
@@ -40,9 +39,9 @@ export function Footer() {
           <span className="font-mono text-xs text-fg-muted">flightrec</span>
         </div>
         <div className="flex items-center gap-6 font-mono text-xs text-fg-faint">
-          <SmoothLink href="#architecture" className="transition hover:text-fg">
+          <a href="/docs" className="transition hover:text-fg">
             Docs
-          </SmoothLink>
+          </a>
           <a href="/vision" className="transition hover:text-fg">
             Vision
           </a>

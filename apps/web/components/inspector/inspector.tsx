@@ -1,8 +1,8 @@
 "use client";
 
 import type { Session } from "@flightrec/trace-schema";
-import { useReducedMotion } from "motion/react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { animate, useMotionValue, useReducedMotion } from "motion/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TimelineMode } from "./center/timeline-mode";
 import { EventIndex } from "./event-index";
 import { PLANES, type Plane, clampTick, tickBounds } from "./lib/derive";
@@ -15,8 +15,9 @@ import { FrecControls } from "./frec-controls";
 import { parseFrec } from "./lib/frec";
 import { PayloadMode } from "./center/payload-mode";
 import { CausalityMode } from "./center/causality-mode";
+import { PresentationMode } from "./center/presentation-mode";
 
-const PLAY_MS = 650; // dwell per tick during playback
+const PLAY_MS = 2000; // dwell per tick during playback
 
 export function Inspector({ session: initialSession }: { session: Session }) {
   const [session, setSession] = useState(initialSession);
@@ -27,6 +28,16 @@ export function Inspector({ session: initialSession }: { session: Session }) {
   const [mode, setMode] = useState<Mode>("timeline");
   const [dragging, setDragging] = useState(false);
   const reduce = useReducedMotion();
+
+  // The playhead position (0..1) the timeline renders. It's decoupled from `tick`
+  // so autoplay can dwell on a dot, then glide to the next, and only commit the
+  // tick (activating its content) once the line arrives.
+  const head = useMotionValue(0);
+  const tickRef = useRef(tick);
+  const ratioOf = useCallback(
+    (t: number) => (max === min ? 0 : (t - min) / (max - min)),
+    [min, max],
+  );
 
   const loadSession = useCallback((next: Session) => {
     setSession(next);
@@ -65,14 +76,48 @@ export function Inspector({ session: initialSession }: { session: Session }) {
   }, []);
 
   useEffect(() => {
-    if (!playing || reduce || tick >= max) return;
-    const id = setTimeout(() => {
-      const nextTick = clampTick(session, tick + 1);
-      setTick(nextTick);
-      if (nextTick >= max) setPlaying(false);
-    }, PLAY_MS);
-    return () => clearTimeout(id);
-  }, [playing, reduce, tick, max, session]);
+    tickRef.current = tick;
+  }, [tick]);
+
+  // While not playing, the playhead is glued to the committed tick (crisp scrubbing).
+  useEffect(() => {
+    if (!playing) head.set(ratioOf(tick));
+  }, [tick, playing, ratioOf, head]);
+
+  // Autoplay: dwell on the current dot, then glide to the next dot, and only commit
+  // the tick (activating its content) once the line arrives. The loop drives its own
+  // progression, so it starts once when play begins rather than re-running per tick.
+  useEffect(() => {
+    if (!playing || reduce) return;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout>;
+    let controls: ReturnType<typeof animate> | undefined;
+    const stepFrom = (t: number) => {
+      if (cancelled) return;
+      if (t >= max) {
+        setPlaying(false);
+        return;
+      }
+      timer = setTimeout(() => {
+        if (cancelled) return;
+        controls = animate(head, ratioOf(t + 1), {
+          duration: (PLAY_MS * 0.5) / 1000,
+          ease: "easeInOut",
+          onComplete: () => {
+            if (cancelled) return;
+            setTick(t + 1);
+            stepFrom(t + 1);
+          },
+        });
+      }, PLAY_MS * 0.5);
+    };
+    stepFrom(tickRef.current);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      controls?.stop();
+    };
+  }, [playing, reduce, max, ratioOf, head]);
 
   const togglePlay = useCallback(() => {
     if (reduce) return;
@@ -158,6 +203,7 @@ export function Inspector({ session: initialSession }: { session: Session }) {
         session={session}
         tick={tick}
         activePlanes={activePlanes}
+        head={head}
         onScrub={setClamped}
       />
 
@@ -201,8 +247,10 @@ export function Inspector({ session: initialSession }: { session: Session }) {
             <DiffMode session={session} tick={tick} />
           ) : mode === "payload" ? (
             <PayloadMode session={session} tick={tick} />
-          ) : (
+          ) : mode === "causality" ? (
             <CausalityMode session={session} tick={tick} />
+          ) : (
+            <PresentationMode session={session} tick={tick} />
           )}
         </div>
         <div className="border-t border-line lg:col-span-2 lg:border-l-0 xl:col-span-1 xl:border-t-0 xl:border-l">
