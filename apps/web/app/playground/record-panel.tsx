@@ -50,6 +50,13 @@ export function RecordPanel() {
         {pending ? "Recording…" : "▶ Record a session"}
       </button>
 
+      <Link
+        href="/playground/render"
+        className="font-mono text-[11px] text-accent underline-offset-4 hover:underline"
+      >
+        or capture a server render →
+      </Link>
+
       {result && (
         <div className="card flex w-full flex-col items-center gap-3 px-5 py-4">
           <span className="font-mono text-xs text-fg-muted">
