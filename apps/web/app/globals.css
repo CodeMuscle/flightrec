@@ -196,6 +196,43 @@ body {
   box-shadow: var(--shadow-float);
 }
 
+/* Tailwind v4 drops the default button cursor — restore it for anything clickable. */
+button:not(:disabled),
+[role="button"]:not(:disabled),
+label[for],
+summary {
+  cursor: pointer;
+}
+
+/* Reflective border that follows the cursor on hover (--mx/--my set by CardGlow). */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    180px circle at var(--mx, -200px) var(--my, -200px),
+    color-mix(in srgb, var(--accent) 60%, transparent),
+    transparent 60%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.card:hover::after {
+  opacity: 1;
+}
+
 /* fully-rounded pill buttons */
 .pill {
   border-radius: 999px;
