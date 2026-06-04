@@ -95,6 +95,14 @@ npm i flightrec`}</Code>
                   reload it.
                 </li>
               </ol>
+              <Callout>
+                Want a <strong>real</strong> trace? Record one in the{" "}
+                <Link href="/playground" className="text-accent underline-offset-4 hover:underline">
+                  playground
+                </Link>{" "}
+                — it runs a live Server Action through the recorder and hands you a{" "}
+                <code>.frec</code> to drag into the inspector.
+              </Callout>
             </Section>
 
             <Section id="trace-model" title="The trace model">

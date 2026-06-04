@@ -32,6 +32,12 @@ export function Nav() {
 
         <div className="flex items-center gap-2">
           <a
+            href="/playground"
+            className="hidden font-mono text-xs text-fg-muted transition hover:text-fg sm:inline"
+          >
+            Playground
+          </a>
+          <a
             href="/docs"
             className="hidden font-mono text-xs text-fg-muted transition hover:text-fg sm:inline"
           >
