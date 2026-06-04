@@ -8,9 +8,10 @@ import {
   runWithSession,
 } from "@flightrec/recorder";
 import { recordedSetCookie, recordedUpdateTag } from "@/lib/flightrec-next";
+import { saveSession } from "@/lib/session-store";
 
-/** Runs a createPost-style flow inside a recording scope; returns the captured .frec. */
-export async function recordSession(): Promise<{ frec: string; events: number }> {
+/** Runs a createPost-style flow inside a recording scope; stores it and returns the .frec + id. */
+export async function recordSession(): Promise<{ frec: string; events: number; id: string }> {
   const { session } = await runWithSession(
     { app: "playground", route: "/posts/new", nextVersion: "16.2.6" },
     async () => {
@@ -26,5 +27,6 @@ export async function recordSession(): Promise<{ frec: string; events: number }>
       recordServerActionEnd("createPost", { ms: 330, ok: true });
     },
   );
-  return { frec: JSON.stringify(session, null, 2), events: session.events.length };
+  const id = saveSession(session);
+  return { frec: JSON.stringify(session, null, 2), events: session.events.length, id };
 }
