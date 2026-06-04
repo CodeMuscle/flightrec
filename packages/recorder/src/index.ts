@@ -66,3 +66,4 @@ export function createRecorder(options: RecorderOptions = {}): Recorder {
 }
 
 export * from "./context";
+export * from "./helpers";

@@ -1,0 +1,38 @@
+import { describe, expect, it } from "vitest";
+import {
+  recordCacheRevalidate,
+  recordCacheUpdate,
+  recordRedirect,
+  recordServerActionEnd,
+  recordServerActionStart,
+  runWithSession,
+} from "./index";
+
+describe("recording helpers", () => {
+  it("emit the right phases + meta within a scope", async () => {
+    const { session } = await runWithSession({ sessionId: "s" }, () => {
+      recordServerActionStart("createPost", "actions.ts:createPost");
+      recordCacheUpdate("posts");
+      recordCacheRevalidate("posts", "max");
+      recordRedirect("/posts/42", 303);
+      recordServerActionEnd("createPost", { ms: 330, ok: true });
+    });
+
+    expect(session.events.map((e) => e.phase)).toEqual([
+      "server-action:start",
+      "cache:update-tag",
+      "cache:revalidate-tag",
+      "redirect",
+      "server-action:end",
+    ]);
+    expect(session.events[0].actionName).toBe("createPost");
+    expect(session.events[1].meta).toEqual({ tag: "posts" });
+    expect(session.events[2].meta).toEqual({ tag: "posts", profile: "max" });
+    expect(session.events[3].meta).toMatchObject({ to: "/posts/42", status: 303 });
+    expect(session.events[4].meta).toEqual({ ms: 330, ok: true });
+  });
+
+  it("helpers are no-ops outside a recording scope", () => {
+    expect(recordCacheUpdate("x")).toBeUndefined();
+  });
+});
