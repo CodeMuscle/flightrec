@@ -103,6 +103,9 @@ importers:
         specifier: workspace:*
         version: link:../trace-schema
     devDependencies:
+      '@types/node':
+        specifier: ^20
+        version: 20.19.41
       typescript:
         specifier: ^5
         version: 5.9.3
