@@ -11,6 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@flightrec/recorder": "workspace:*",
     "@flightrec/trace-fixtures": "workspace:*",
     "@flightrec/trace-schema": "workspace:*",
     "@react-three/drei": "^10.7.7",
