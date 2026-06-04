@@ -7,7 +7,7 @@ import {
   recordUserInput,
   runWithSession,
 } from "@flightrec/recorder";
-import { recordedSetCookie, recordedUpdateTag } from "@/lib/flightrec-next";
+import { recordedRedirect, recordedSetCookie, recordedUpdateTag } from "@/lib/flightrec-next";
 import { saveSession } from "@/lib/session-store";
 
 /** Runs a createPost-style flow inside a recording scope; stores it and returns the .frec + id. */
@@ -29,4 +29,24 @@ export async function recordSession(): Promise<{ frec: string; events: number; i
   );
   const id = saveSession(session);
   return { frec: JSON.stringify(session, null, 2), events: session.events.length, id };
+}
+
+/** Records a flow that ends in a real redirect, then lands you in the inspector viewing it. */
+export async function recordAndInspect(): Promise<void> {
+  const id = `ses_${crypto.randomUUID().slice(0, 6)}`;
+  await runWithSession(
+    { sessionId: id, app: "playground", route: "/posts/new", nextVersion: "16.2.6" },
+    async () => {
+      recordUserInput("/posts/new", "app/playground/page.tsx:RecordPanel");
+      recordServerActionStart(
+        "createPost",
+        "app/playground/actions.ts:recordAndInspect",
+        "/posts/new",
+      );
+      recordedUpdateTag("posts");
+      await recordedSetCookie("last_post", "42");
+      recordServerActionEnd("createPost", { ms: 330, ok: true });
+      recordedRedirect(`/inspector?session=${id}`); // real redirect() — throws, navigates
+    },
+  );
 }

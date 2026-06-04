@@ -2,11 +2,15 @@
 
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { recordSession } from "./actions";
+import { recordAndInspect, recordSession } from "./actions";
 
 export function RecordPanel() {
   const [pending, start] = useTransition();
-  const [result, setResult] = useState<{ frec: string; events: number; id: string } | null>(null);
+  const [result, setResult] = useState<{
+    frec: string;
+    events: number;
+    id: string;
+  } | null>(null);
 
   const record = () =>
     start(async () => {
@@ -25,6 +29,18 @@ export function RecordPanel() {
 
   return (
     <div className="flex flex-col items-center gap-4">
+      <form action={recordAndInspect}>
+        <button
+          type="submit"
+          className="pill bg-fg px-5 py-3 text-sm font-medium text-bg shadow-(--shadow-card) transition hover:opacity-90"
+        >
+          ▶ Record &amp; open in inspector
+        </button>
+      </form>
+      <span className="font-mono text-[10px] uppercase tracking-widest text-fg-faint">
+        or record + view here
+      </span>
+
       <button
         type="button"
         onClick={record}
