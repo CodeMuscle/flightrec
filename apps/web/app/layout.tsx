@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { CardGlow } from "@/components/card-glow";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const geistMono = Geist_Mono({
@@ -55,6 +56,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={`${geistMono.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <ThemeProvider>{children}</ThemeProvider>
+        <CardGlow />
       </body>
     </html>
   );
