@@ -35,6 +35,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@flightrec/recorder':
+        specifier: workspace:*
+        version: link:../../packages/recorder
       '@flightrec/trace-fixtures':
         specifier: workspace:*
         version: link:../../packages/trace-fixtures
