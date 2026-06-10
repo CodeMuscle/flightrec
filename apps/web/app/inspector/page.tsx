@@ -6,6 +6,7 @@ import { Inspector } from "@/components/inspector/inspector";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getSession } from "@/lib/session-store";
+import { RecentSessions } from "@/components/recent-sessions";
 
 export const metadata: Metadata = {
   title: "Inspector",
@@ -36,6 +37,7 @@ export default async function InspectorPage({
 
       <div className="mx-auto w-full max-w-6xl">
         <div className="mb-6 text-center">
+          <RecentSessions activeId={sessionId} />
           <span className="eyebrow">
             Inspector · {recorded ? "recorded session" : "live preview"}
           </span>
