@@ -48,3 +48,13 @@ export function recordHeaderMutation(key: string) {
 export function recordRedirect(to: string, status = 307) {
   return recordEvent({ phase: "redirect", route: to, meta: { to, status } });
 }
+
+// Harden Transport Module D
+/** Record a caught error as an `error` event (name + message). Redirects are not errors. */
+export function recordError(error: unknown, sourceRef?: string) {
+  const meta =
+    error instanceof Error
+      ? { name: error.name, message: error.message }
+      : { message: String(error) };
+  return recordEvent({ phase: "error", sourceRef, meta });
+}

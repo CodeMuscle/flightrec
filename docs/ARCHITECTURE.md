@@ -269,5 +269,17 @@ server page `getSession(id) ?? blogPostSession()` → `<Inspector session=… />
 ## 9. Changelog (append per module)
 
 - **2026-06** — Initial as-built capture through Phase 1 (recorder complete: core, context, vocabulary,
-  live capture, transport, real redirect, render capture). Next: **B** persistent storage + `.frec`
-  bundle · **D** error-path capture + source-mapping · **C** checkpoints / AI / MCP.
+  live capture, transport, real redirect, render capture).
+- **2026-06 · B (transport durability)** — `session-store` now backs the in-memory cache with `.frec`
+  files on disk (`.flightrec/`, gitignored), so sessions survive a dev-server restart (`session.id` =
+  idempotency key). Added a **recent-traces picker** on the inspector page (`listSessions`). `.frec`
+  bundle kept as plain schema-validated JSON (zip/manifest deferred — Simplicity First).
+- **2026-06 · D (error capture)** — `recordError(error, sourceRef?)` emits the `error` phase
+  (`{ name, message }`); failing-action demo on `/playground`. `actionId → file:symbol` is already
+  covered by recorded `sourceRef` + `parseSourceRef`; resolving Next's opaque `actionId` hash is
+  deferred to the MCP work (needs the build manifest).
+- **2026-06 · C (reconciler core)** — `reconcileTree(session, tick)`: folds the `RscOp` stream
+  (`node-create/replace`, `prop-patch`, `suspend/resolve`, `remove`) into the materialized React tree
+  at any tick (the roadmap's "riskiest unit," built test-first). Checkpoint memoization deferred (fold
+  is cheap at current sizes). **Next (branch + PR):** render the tree as an inspector view; AI summaries
+  (free-tier model, never paid); MCP adapter.

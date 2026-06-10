@@ -22,6 +22,7 @@ import {
   frameOps,
   causalChain,
   narrate,
+  reconcileTree,
 } from "./derive";
 
 const session = blogPostSession();
@@ -225,5 +226,22 @@ describe("narrate", () => {
     expect(narrate(cache)).toContain("posts");
     expect(narrate(cache).toLowerCase()).toContain("invalidate");
     expect(narrate(action)).toContain("createPost");
+  });
+});
+
+describe("reconcileTree", () => {
+  it("folds the RSC ops into the materialized tree", () => {
+    const tree = reconcileTree(session, 11);
+    expect(tree).toHaveLength(1);
+    expect(tree[0].label).toBe("<PostLayout>");
+    const suspense = tree[0].children[0];
+    expect(suspense.label).toBe("<Suspense>");
+    expect(suspense.suspended).toBe(false); // resolved by tick 9
+    const h1 = suspense.children[0].children[0];
+    expect(h1.label).toBe("<h1>");
+    expect(h1.props.children).toBe("Shipping Flightrec");
+  });
+  it("reflects suspense state at an earlier tick", () => {
+    expect(reconcileTree(session, 8)[0].children[0].suspended).toBe(true);
   });
 });
