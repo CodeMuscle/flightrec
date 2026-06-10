@@ -6,6 +6,7 @@ import {
   recordServerActionStart,
   recordUserInput,
   runWithSession,
+  recordError,
 } from "@flightrec/recorder";
 import { recordedRedirect, recordedSetCookie, recordedUpdateTag } from "@/lib/flightrec-next";
 import { saveSession } from "@/lib/session-store";
@@ -49,4 +50,29 @@ export async function recordAndInspect(): Promise<void> {
       recordedRedirect(`/inspector?session=${id}`); // real redirect() — throws, navigates
     },
   );
+}
+
+// Harden Transport Module D
+/** Records a flow where the action throws — the error is captured as an `error` event. */
+export async function recordFailingAction(): Promise<{ frec: string; events: number; id: string }> {
+  const { session } = await runWithSession(
+    { app: "playground", route: "/posts/new", nextVersion: "16.2.6" },
+    async () => {
+      recordUserInput("/posts/new", "app/playground/page.tsx:RecordPanel");
+      recordServerActionStart(
+        "createPost",
+        "app/playground/actions.ts:recordFailingAction",
+        "/posts/new",
+      );
+      recordedUpdateTag("posts");
+      try {
+        throw new Error("Database connection refused");
+      } catch (err) {
+        recordError(err, "app/posts/actions.ts:createPost");
+      }
+      recordServerActionEnd("createPost", { ms: 120, ok: false });
+    },
+  );
+  const id = saveSession(session);
+  return { frec: JSON.stringify(session, null, 2), events: session.events.length, id };
 }

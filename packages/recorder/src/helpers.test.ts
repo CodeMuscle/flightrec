@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   recordCacheRevalidate,
   recordCacheUpdate,
+  recordError,
   recordRedirect,
   recordServerActionEnd,
   recordServerActionStart,
@@ -35,4 +36,15 @@ describe("recording helpers", () => {
   it("helpers are no-ops outside a recording scope", () => {
     expect(recordCacheUpdate("x")).toBeUndefined();
   });
+});
+
+// Transport Module D
+it("records a caught error as an error event", async () => {
+  const { session } = await runWithSession({ sessionId: "e" }, () => {
+    recordError(new Error("boom"), "lib/db.ts:query");
+  });
+  const ev = session.events[0];
+  expect(ev.phase).toBe("error");
+  expect(ev.sourceRef).toBe("lib/db.ts:query");
+  expect(ev.meta).toEqual({ name: "Error", message: "boom" });
 });

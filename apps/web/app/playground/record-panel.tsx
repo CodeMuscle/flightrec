@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import { recordAndInspect, recordSession } from "./actions";
+import { recordAndInspect, recordFailingAction, recordSession } from "./actions";
 
 export function RecordPanel() {
   const [pending, start] = useTransition();
@@ -11,6 +11,11 @@ export function RecordPanel() {
     events: number;
     id: string;
   } | null>(null);
+
+  const recordFailing = () =>
+    start(async () => {
+      setResult(await recordFailingAction());
+    });
 
   const record = () =>
     start(async () => {
@@ -48,6 +53,15 @@ export function RecordPanel() {
         className="pill bg-fg px-5 py-3 text-sm font-medium text-bg shadow-(--shadow-card) transition hover:opacity-90 disabled:opacity-50"
       >
         {pending ? "Recording…" : "▶ Record a session"}
+      </button>
+
+      <button
+        type="button"
+        onClick={recordFailing}
+        disabled={pending}
+        className="pill border border-line bg-bg-raised px-5 py-3 text-sm font-medium text-fg shadow-(--shadow-sm) transition hover:border-line-strong disabled:opacity-50"
+      >
+        {pending ? "Recording…" : "▶ Record a failing action"}
       </button>
 
       <Link

@@ -272,3 +272,62 @@ export function narrate(event: TraceEvent): string {
       return "An error occurred during the flow.";
   }
 }
+
+export type TreeNode = {
+  id: string;
+  label: string;
+  props: Record<string, unknown>;
+  suspended: boolean;
+  children: TreeNode[];
+};
+
+/** The reconciler core: fold every RSC op up to the tick into the materialized React tree. */
+export function reconcileTree(session: Session, tick: number): TreeNode[] {
+  type Flat = { node: TreeNode; parentId?: string };
+  const flat = new Map<string, Flat>();
+  const order: string[] = [];
+
+  for (const frame of rscFramesUpTo(session, tick)) {
+    for (const op of frameOps(frame)) {
+      switch (op.type) {
+        case "node-create": {
+          if (!flat.has(op.nodeId)) order.push(op.nodeId);
+          flat.set(op.nodeId, {
+            node: { id: op.nodeId, label: op.label, props: {}, suspended: false, children: [] },
+            parentId: op.parentId,
+          });
+          break;
+        }
+        case "node-replace": {
+          const f = flat.get(op.nodeId);
+          if (f) f.node.label = op.nextLabel;
+          break;
+        }
+        case "prop-patch": {
+          const f = flat.get(op.nodeId);
+          if (f) f.node.props[op.key] = op.nextValue;
+          break;
+        }
+        case "suspend":
+        case "resolve": {
+          const f = flat.get(op.nodeId);
+          if (f) f.node.suspended = op.type === "suspend";
+          break;
+        }
+        case "remove":
+          flat.delete(op.nodeId);
+          break;
+      }
+    }
+  }
+
+  const roots: TreeNode[] = [];
+  for (const id of order) {
+    const f = flat.get(id);
+    if (!f) continue; // removed
+    const parent = f.parentId ? flat.get(f.parentId) : undefined;
+    if (parent) parent.node.children.push(f.node);
+    else roots.push(f.node);
+  }
+  return roots;
+}
