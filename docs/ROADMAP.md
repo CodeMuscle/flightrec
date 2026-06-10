@@ -7,54 +7,71 @@ engine work proceeds in parallel without blocking public momentum.
 
 ---
 
-## 0. Tech Stack (decisions)
+## Status — as built (June 2026)
 
-| Concern             | Choice                                              | Why                                                    |
-| ------------------- | --------------------------------------------------- | ------------------------------------------------------ |
-| Monorepo            | pnpm workspaces + Turborepo                         | Matches the `packages/*` + `apps/*` layout in the PRD  |
-| Language            | TypeScript (strict)                                 | Schema-first product; types are the contract           |
-| Landing + Inspector | Next.js 15 App Router + React 19                    | Dogfood the exact framework we debug                   |
-| UI system           | Tailwind v4 + shadcn/ui + Radix                     | The PRD explicitly asks for a shadcn/Vercel aesthetic  |
-| Animation           | `motion` (Framer Motion)                            | Subtle, precise transitions per design guidance        |
-| Diagrams            | Mermaid (build-time render)                         | Architecture/ER diagrams from the PRD                  |
-| Schema/validation   | Zod + inferred TS types                             | One source of truth for `TraceEvent`, `RscFrame`, etc. |
-| Local storage       | `idb` (IndexedDB) + OPFS adapter                    | Two storage backends per PRD                           |
-| Package build       | `tsup`                                              | Fast dual ESM/CJS bundles for SDK packages             |
-| Server capture      | `AsyncLocalStorage` + `instrumentation.ts`          | Per-request trace context without globals              |
-| Testing             | Vitest (unit/integration) + Playwright (E2E/visual) | Matches CI/CD workflow in PRD                          |
-| Tooling             | Biome or ESLint+Prettier, Changesets, tsx           | Lint/format, versioned releases                        |
-| Docs                | Nextra or Fumadocs                                  | Docs-site app in the PRD                               |
+Built in public; the actual sequence diverged from the phase numbering below (the landing
+page + inspector were built against fixtures first, the real recorder last).
+
+**Shipped:**
+- **Foundations (Phase 0)** — pnpm + Turborepo monorepo; full tooling (Biome, Husky + lint-staged, commitlint, Changesets, GitHub Actions CI, CodeQL, Dependabot, CodeRabbit); `@flightrec/trace-schema` (Zod) + `@flightrec/trace-fixtures` (golden 12-tick session); inspector IA wireframe (`docs/INSPECTOR-IA.md`).
+- **Public surface** — landing page, `/docs`, `/playground`, `/vision` pitch deck; live-demo + waitlist CTAs; the "Soft Lab" design system.
+- **Inspector MVP (Phase 2)** — 5 regions (timeline · event index · center · context · raw tray) and **all 5 modes** (timeline / diff / payload / causality / presentation); `.frec` import (drag-drop) + export; dev session store + `?session=<id>` loading; dwell-and-glide playback.
+- **Recorder (Phase 3 core)** — `@flightrec/recorder`: pure session-builder core + `AsyncLocalStorage` per-request context + typed recording vocabulary; live capture in `/playground`; dev in-memory transport (`/api/sessions`); real `redirect()` capture (flush-before-throw); server-component render capture (React `cache()` + `after()`).
+
+**Not yet built (planned below):** real persistent storage (IndexedDB/OPFS), `.frec` zip+manifest bundle, the `reconciler`/checkpoint engine, `source-mapper`, `ai-insights`, `mcp-adapter`, OTel interop, redaction layer, capture modes, raw binary Flight-frame capture (deferred — no public Next hook).
+
+> The original phase numbering (Phase 1 = landing, 2 = inspector, 3 = recorder) is kept below as the historical plan; the as-built order was Phase 0 → inspector → recorder.
 
 ---
 
-## 1. Monorepo Layout (from PRD, finalized)
+## 0. Tech Stack (decisions)
+
+| Concern             | Choice (as built)                                   | Notes                                                    |
+| ------------------- | --------------------------------------------------- | -------------------------------------------------------- |
+| Monorepo            | pnpm workspaces + Turborepo                         | `packages/*` + `apps/*` layout                           |
+| Language            | TypeScript (strict)                                 | Schema-first; types are the contract                     |
+| Landing + Inspector | Next.js 16.2.6 App Router + React 19.2              | Dogfood the exact framework we debug                     |
+| UI system           | Tailwind v4 + custom "Soft Lab" system              | Hand-built (no shadcn/Radix dep); light-first + dark     |
+| Animation           | `motion` (Framer Motion)                            | Scroll story; dwell-and-glide playhead                   |
+| Schema/validation   | Zod + inferred TS types                             | One source of truth (`TraceEvent`, `RscFrame`, …)        |
+| Server capture      | `AsyncLocalStorage` + React `cache()` + `after()`   | Per-request context; render capture via cache()/after()  |
+| Testing             | Vitest (unit) + Playwright (E2E, ad-hoc)            | CI runs Vitest; visual checks ad-hoc                     |
+| Lint/format         | Biome                                               | + Husky, lint-staged, commitlint, Changesets             |
+| Storage (today)     | dev in-memory store (`globalThis` Map)              | **Planned:** IndexedDB + OPFS adapters                   |
+| Bundle (`.frec`)    | JSON `Session` (schema-validated)                   | **Planned:** zip + manifest + diffs (`bundle-frec`)      |
+| Package build       | TS source exports (`workspace:*`)                   | **Planned:** `tsup` dual ESM/CJS for publish             |
+| Docs                | Handcrafted `/docs` (Soft Lab)                      | **Planned:** Nextra/Fumadocs if it outgrows one page     |
+| Diagrams            | ASCII wireframes in `docs/`                         | **Planned:** Mermaid render if needed                    |
+
+---
+
+## 1. Monorepo Layout (as built → planned target)
+
+**As built today** — one app, three packages:
 
 ```
 flightrec/
   apps/
-    inspector-pwa/      # the scrubbable timeline inspector (Next.js PWA)
-    demo-playground/    # Next.js app instrumented with the recorder (3 demos)
-    docs-site/          # docs + the public landing page
+    web/                # all public surface: landing, /docs, /inspector, /playground, /vision, /waitlist
   packages/
-    trace-schema/       # Zod schemas + TS types (TraceEvent, RscFrame, RscOp, CacheOutcome)
-    recorder-core/      # framework-agnostic capture + normalization primitives
-    recorder-next/      # Next.js server instrumentation (Server Actions, cache, RSC, headers)
-    recorder-client/    # client transition + tree-diff capture
-    trace-normalizer/   # raw events -> normalized intermediate representation
-    trace-storage-indexeddb/
-    trace-storage-opfs/
-    bundle-frec/         # .frec export/import (zip + manifest + diffs)
-    source-mapper/      # actionId/sourceRef -> file:symbol
-    ai-insights/        # AI summaries + bug reports
-    mcp-adapter/        # Next.js MCP enrichment + Flightrec MCP server
-    reconciler/         # RSC replay graph + checkpoint/snapshot engine (NEW vs PRD)
-    test-harness/       # golden traces, fixtures, assertion helpers
-  docs/                 # this roadmap + design notes
+    trace-schema/       # Zod schemas + TS types (TraceEvent, RscFrame, RscOp, CacheOutcome, Session)
+    trace-fixtures/     # the golden 12-tick blog-post session
+    recorder/           # @flightrec/recorder: core + AsyncLocalStorage context + recording vocabulary
+  docs/                 # ROADMAP, INSPECTOR-IA, LANDING_PAGE, design notes
 ```
 
-> Addition vs PRD: a dedicated **`reconciler`** package isolates the replay-graph engine
-> (the RscFrame → tree state machine) from normalization. This is the riskiest code; it
-> deserves its own unit-tested boundary.
+**Planned target** — extract from `apps/web` and `@flightrec/recorder` as each earns its own boundary:
+
+```
+  apps/{ inspector-pwa, demo-playground, docs-site }
+  packages/{ recorder-core, recorder-next, recorder-client, trace-normalizer,
+             trace-storage-indexeddb, trace-storage-opfs, bundle-frec, source-mapper,
+             ai-insights, mcp-adapter, reconciler, test-harness }
+```
+
+> The riskiest planned unit is **`reconciler`** (the RscFrame → tree replay/checkpoint engine). Build
+> it test-first against hand-authored `RscOp` sequences before touching real bytes; never execute
+> payloads — parse/normalize/sanitize only.
 
 ---
 

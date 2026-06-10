@@ -50,6 +50,10 @@
     "shadcn",
     "oklch",
     "playhead",
-    "drei"
+    "drei",
+    "wireframes",
+    "idempotency",
+    "reconciler",
+    "normalizer"
   ]
 }
