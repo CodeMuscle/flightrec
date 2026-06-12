@@ -1,3 +1,6 @@
 
 # Flightrec dev session traces
 .flightrec/
+
+.env*.local
+
