@@ -9,6 +9,8 @@ import {
   parseSourceRef,
 } from "../lib/derive";
 
+import { AiSummary } from "./ai-summary";
+
 const OUTCOME_TONE: Record<CacheOutcome, string> = {
   "immediate-freshness": "var(--plane-cache)",
   "stale-then-refresh": "var(--plane-net)",
@@ -74,9 +76,7 @@ export function ContextPanel({ session, tick }: { session: Session; tick: number
       </Section>
 
       <Section title="AI summary">
-        <div className="rounded-lg border border-dashed border-line px-3 py-3 text-center font-mono text-[11px] text-fg-faint">
-          coming soon
-        </div>
+        <AiSummary session={session} />
       </Section>
     </div>
   );
