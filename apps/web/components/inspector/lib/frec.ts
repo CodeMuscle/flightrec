@@ -1,3 +1,4 @@
+import { redactSession } from "@flightrec/recorder/redact";
 import { Session } from "@flightrec/trace-schema";
 
 export type FrecResult = { ok: true; session: Session } | { ok: false; error: string };
@@ -19,5 +20,5 @@ export function parseFrec(text: string): FrecResult {
 
 /** Serialize a session to .frec text (pretty-printed). */
 export function serializeFrec(session: Session): string {
-  return JSON.stringify(session, null, 2);
+  return JSON.stringify(redactSession(session), null, 2);
 }

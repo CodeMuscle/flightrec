@@ -1,13 +1,14 @@
+import { redactSession } from "@flightrec/recorder/redact";
 import { blogPostSession } from "@flightrec/trace-fixtures";
 import { describe, expect, it } from "vitest";
 import { parseFrec, serializeFrec } from "./frec";
 
 describe("frec round-trip", () => {
-  it("serialize → parse yields an equivalent session", () => {
+  it("serialize → parse yields the redacted session (secrets masked on export)", () => {
     const original = blogPostSession();
     const result = parseFrec(serializeFrec(original));
     expect(result.ok).toBe(true);
-    if (result.ok) expect(result.session).toEqual(original);
+    if (result.ok) expect(result.session).toEqual(redactSession(original));
   });
 
   it("rejects non-JSON", () => {
