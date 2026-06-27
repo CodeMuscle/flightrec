@@ -10,6 +10,7 @@ import {
 } from "../lib/derive";
 
 import { AiSummary } from "./ai-summary";
+import { TreeView } from "./tree-view";
 
 const OUTCOME_TONE: Record<CacheOutcome, string> = {
   "immediate-freshness": "var(--plane-cache)",
@@ -73,6 +74,10 @@ export function ContextPanel({ session, tick }: { session: Session; tick: number
             <Row key={`${m.kind}-${m.key}-${i}`} label={m.kind} value={`${m.key} = ${m.value}`} />
           ))
         )}
+      </Section>
+
+      <Section title="React tree">
+        <TreeView session={session} tick={tick} />
       </Section>
 
       <Section title="AI summary">
