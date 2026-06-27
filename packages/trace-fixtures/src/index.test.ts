@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { RscOp, Session } from "@flightrec/trace-schema";
-import { blogPostSession } from "./index";
+import { authCookieSession, blogPostSession, staleDashboardSession } from "./index";
 
 describe("blogPostSession", () => {
   const s = blogPostSession();
@@ -23,5 +23,20 @@ describe("blogPostSession", () => {
       expect(ops.length).toBeGreaterThan(0);
       for (const op of ops) expect(RscOp.safeParse(op).success).toBe(true);
     }
+  });
+});
+
+describe("extra demo flows", () => {
+  it("stale dashboard: valid + revalidate with no downstream render", () => {
+    const s = staleDashboardSession();
+    expect(() => Session.parse(s)).not.toThrow();
+    expect(s.events.some((e) => e.phase === "cache:revalidate-tag")).toBe(true);
+    expect(s.events.some((e) => e.phase === "rsc:chunk" || e.phase === "tree:diff")).toBe(false);
+  });
+  it("auth cookie: valid + sets session cookie and redirects", () => {
+    const s = authCookieSession();
+    expect(() => Session.parse(s)).not.toThrow();
+    expect(s.events.find((e) => e.phase === "cookies:mutate")?.meta?.key).toBe("session_token");
+    expect(s.events.some((e) => e.phase === "redirect")).toBe(true);
   });
 });
