@@ -4,15 +4,15 @@ import type { Session } from "@flightrec/trace-schema";
 import { Session as SessionSchema } from "@flightrec/trace-schema";
 import { narrate } from "@/components/inspector/lib/derive";
 
-const MODEL = "gemini-2.5-flash"; // free tier; fall back to "gemini-2.0-flash" if this 404s
+// Any OpenAI-compatible provider. Default: Groq (free tier, instant key, no card).
+// Switch providers via env only — no code change.
+const BASE_URL = process.env.AI_BASE_URL ?? "https://api.groq.com/openai/v1";
+const MODEL = process.env.AI_MODEL ?? "llama-3.3-70b-versatile";
+const API_KEY = process.env.AI_API_KEY;
 
 export async function summarizeSession(input: Session): Promise<{ ok: boolean; summary: string }> {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) {
-    return {
-      ok: false,
-      summary: "Set GEMINI_API_KEY in apps/web/.env.local to enable AI summaries.",
-    };
+  if (!API_KEY) {
+    return { ok: false, summary: "Set AI_API_KEY in apps/web/.env.local to enable AI summaries." };
   }
   const parsed = SessionSchema.safeParse(input);
   if (!parsed.success) return { ok: false, summary: "Invalid session." };
@@ -28,17 +28,19 @@ Timeline:
 ${timeline}`;
 
   try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-goog-api-key": key },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-      },
-    );
-    if (!res.ok) return { ok: false, summary: `Gemini error ${res.status}` };
+    const res = await fetch(`${BASE_URL}/chat/completions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${API_KEY}` },
+      body: JSON.stringify({
+        model: MODEL,
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.3,
+        max_tokens: 200,
+      }),
+    });
+    if (!res.ok) return { ok: false, summary: `AI error ${res.status}` };
     const data = await res.json();
-    const text: string | undefined = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const text: string | undefined = data?.choices?.[0]?.message?.content;
     return text?.trim()
       ? { ok: true, summary: text.trim() }
       : { ok: false, summary: "No summary returned." };
