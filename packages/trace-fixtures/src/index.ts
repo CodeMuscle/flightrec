@@ -77,3 +77,79 @@ export function blogPostSession(): SessionT {
     events,
   });
 }
+
+function mkEv(sid: string) {
+  return (
+    tick: number,
+    ts: number,
+    phase: TraceEvent["phase"],
+    extra: Partial<TraceEvent> = {},
+  ): TraceEvent => ({ id: `${sid}_${tick}`, sessionId: sid, ts, tick, phase, ...extra });
+}
+
+/** "Stale dashboard" demo — a revalidate with no downstream render → orphaned-invalidation. */
+export function staleDashboardSession(): SessionT {
+  const sid = "ses_dash01";
+  const e = mkEv(sid);
+  const events: TraceEvent[] = [
+    e(0, 0, "user-input", { route: "/dashboard", sourceRef: "app/dashboard/page.tsx:Dashboard" }),
+    e(1, 120, "server-action:start", {
+      route: "/dashboard",
+      actionName: "refreshMetrics",
+      sourceRef: "app/dashboard/actions.ts:refreshMetrics",
+    }),
+    e(2, 210, "cache:revalidate-tag", {
+      actionName: "refreshMetrics",
+      meta: { tag: "metrics", profile: "max" },
+    }),
+    e(3, 260, "server-action:end", { actionName: "refreshMetrics", meta: { ok: true, ms: 140 } }),
+  ];
+  return Session.parse({
+    id: sid,
+    schemaVersion: 1,
+    app: "demo-playground",
+    route: "/dashboard",
+    nextVersion: "16.2.6",
+    startedAt: 0,
+    events,
+  });
+}
+
+/** "Auth cookie" demo — sign-in sets a (secret) cookie + header, redirects, renders. */
+export function authCookieSession(): SessionT {
+  const sid = "ses_auth01";
+  const e = mkEv(sid);
+  const events: TraceEvent[] = [
+    e(0, 0, "user-input", { route: "/login", sourceRef: "app/login/page.tsx:LoginForm" }),
+    e(1, 1500, "user-input", { route: "/login" }),
+    e(2, 1820, "server-action:start", {
+      route: "/login",
+      actionName: "signIn",
+      sourceRef: "app/login/actions.ts:signIn",
+    }),
+    e(3, 1950, "cookies:mutate", { meta: { key: "session_token", value: "eyJhbGciOi.secret" } }),
+    e(4, 1980, "headers:mutate", {
+      meta: { key: "set-cookie", value: "session_token=…; HttpOnly" },
+    }),
+    e(5, 2090, "server-action:end", { actionName: "signIn", meta: { ok: true, ms: 270 } }),
+    e(6, 2140, "redirect", { route: "/dashboard", meta: { status: 303, to: "/dashboard" } }),
+    e(7, 2300, "rsc:chunk", {
+      route: "/dashboard",
+      meta: {
+        frameIndex: 0,
+        segment: "dashboard",
+        ops: [{ type: "node-create", nodeId: "d0", label: "<Dashboard>" }] satisfies RscOp[],
+      },
+    }),
+    e(8, 2440, "tree:diff", { route: "/dashboard", sourceRef: "app/dashboard/page.tsx:Greeting" }),
+  ];
+  return Session.parse({
+    id: sid,
+    schemaVersion: 1,
+    app: "demo-playground",
+    route: "/login",
+    nextVersion: "16.2.6",
+    startedAt: 0,
+    events,
+  });
+}
