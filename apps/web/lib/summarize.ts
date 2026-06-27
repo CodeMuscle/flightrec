@@ -10,23 +10,17 @@ const BASE_URL = process.env.AI_BASE_URL ?? "https://api.groq.com/openai/v1";
 const MODEL = process.env.AI_MODEL ?? "llama-3.3-70b-versatile";
 const API_KEY = process.env.AI_API_KEY;
 
-export async function summarizeSession(input: Session): Promise<{ ok: boolean; summary: string }> {
-  if (!API_KEY) {
-    return { ok: false, summary: "Set AI_API_KEY in apps/web/.env.local to enable AI summaries." };
-  }
-  const parsed = SessionSchema.safeParse(input);
-  if (!parsed.success) return { ok: false, summary: "Invalid session." };
-  const session = parsed.data;
-
+function digest(session: Session): string {
   const timeline = session.events
     .map((e) => `${String(e.tick).padStart(2, "0")}: ${narrate(e)}`)
     .join("\n");
-  const prompt = `You are a debugging assistant for the Next.js App Router. In 2–3 concise, technical sentences, summarize this recorded session for a developer: what the user did, what the server did (action / cache / redirect), and any notable behavior. Don't list every step.
+  return `App: ${session.app ?? "?"} · route: ${session.route ?? "?"} · ${session.events.length} events.\nTimeline:\n${timeline}`;
+}
 
-App: ${session.app ?? "?"} · route: ${session.route ?? "?"} · ${session.events.length} events.
-Timeline:
-${timeline}`;
-
+async function callAI(prompt: string, maxTokens: number): Promise<{ ok: boolean; text: string }> {
+  if (!API_KEY) {
+    return { ok: false, text: "Set AI_API_KEY in apps/web/.env.local to enable AI." };
+  }
   try {
     const res = await fetch(`${BASE_URL}/chat/completions`, {
       method: "POST",
@@ -35,19 +29,37 @@ ${timeline}`;
         model: MODEL,
         messages: [{ role: "user", content: prompt }],
         temperature: 0.3,
-        max_tokens: 200,
+        max_tokens: maxTokens,
       }),
     });
-    if (!res.ok) return { ok: false, summary: `AI error ${res.status}` };
+    if (!res.ok) return { ok: false, text: `AI error ${res.status}` };
     const data = await res.json();
     const text: string | undefined = data?.choices?.[0]?.message?.content;
-    return text?.trim()
-      ? { ok: true, summary: text.trim() }
-      : { ok: false, summary: "No summary returned." };
+    return text?.trim() ? { ok: true, text: text.trim() } : { ok: false, text: "No response." };
   } catch (err) {
     return {
       ok: false,
-      summary: `Request failed: ${err instanceof Error ? err.message : String(err)}`,
+      text: `Request failed: ${err instanceof Error ? err.message : String(err)}`,
     };
   }
+}
+
+export async function summarizeSession(input: Session): Promise<{ ok: boolean; summary: string }> {
+  const parsed = SessionSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, summary: "Invalid session." };
+  const r = await callAI(
+    `You are a debugging assistant for the Next.js App Router. In 2–3 concise, technical sentences, summarize this recorded session for a developer: what the user did, what the server did (action / cache / redirect), and any notable behavior. Don't list every step.\n\n${digest(parsed.data)}`,
+    200,
+  );
+  return { ok: r.ok, summary: r.text };
+}
+
+export async function reportBug(input: Session): Promise<{ ok: boolean; report: string }> {
+  const parsed = SessionSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, report: "Invalid session." };
+  const r = await callAI(
+    `You are a senior Next.js engineer. From this recorded session, write a concise GitHub bug report in markdown with these sections: **Summary**, **Steps to reproduce**, **Expected**, **Actual**, **Likely cause**. Base it only on the trace; if something is unknown, say so.\n\n${digest(parsed.data)}`,
+    500,
+  );
+  return { ok: r.ok, report: r.text };
 }
