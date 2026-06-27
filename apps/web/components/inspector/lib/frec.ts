@@ -1,4 +1,4 @@
-import { redactSession } from "@flightrec/recorder";
+import { redactSession } from "@flightrec/recorder/redact";
 import { Session } from "@flightrec/trace-schema";
 
 export type FrecResult = { ok: true; session: Session } | { ok: false; error: string };
