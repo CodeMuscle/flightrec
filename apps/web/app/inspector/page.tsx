@@ -1,4 +1,8 @@
-import { blogPostSession } from "@flightrec/trace-fixtures";
+import {
+  authCookieSession,
+  blogPostSession,
+  staleDashboardSession,
+} from "@flightrec/trace-fixtures";
 import { Session } from "@flightrec/trace-schema";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -17,13 +21,18 @@ export const metadata: Metadata = {
 export default async function InspectorPage({
   searchParams,
 }: {
-  searchParams: Promise<{ session?: string }>;
+  searchParams: Promise<{ session?: string; demo?: string }>;
 }) {
-  // ?session=<id> loads a session recorded in the playground (dev store); otherwise we
-  // fall back to the golden fixture. Both pass through the same schema-validated boundary.
-  const { session: sessionId } = await searchParams;
+  // ?session=<id> loads a recorded session (dev store); ?demo=<name> picks a golden fixture;
+  // default is the blog-post demo. All pass through the same schema-validated boundary.
+  const { session: sessionId, demo } = await searchParams;
+  const DEMOS: Record<string, () => ReturnType<typeof blogPostSession>> = {
+    blog: blogPostSession,
+    dashboard: staleDashboardSession,
+    auth: authCookieSession,
+  };
   const recorded = sessionId ? getSession(sessionId) : undefined;
-  const session = recorded ?? Session.parse(blogPostSession());
+  const session = recorded ?? Session.parse((DEMOS[demo ?? "blog"] ?? blogPostSession)());
 
   return (
     <main className="relative flex min-h-screen flex-col px-4 py-10 sm:px-6">
@@ -37,6 +46,25 @@ export default async function InspectorPage({
 
       <div className="mx-auto w-full max-w-6xl">
         <div className="mb-6 text-center">
+          <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-fg-faint">
+              demos
+            </span>
+            {(["blog", "dashboard", "auth"] as const).map((d) => (
+              <Link
+                key={d}
+                href={`/inspector?demo=${d}`}
+                className="pill border px-2.5 py-1 font-mono text-[11px] transition"
+                style={{
+                  borderColor:
+                    (demo ?? "blog") === d && !recorded ? "var(--accent)" : "var(--line)",
+                  color: (demo ?? "blog") === d && !recorded ? "var(--accent)" : "var(--fg-muted)",
+                }}
+              >
+                {d}
+              </Link>
+            ))}
+          </div>
           <RecentSessions activeId={sessionId} />
           <span className="eyebrow">
             Inspector · {recorded ? "recorded session" : "live preview"}
