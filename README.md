@@ -14,9 +14,11 @@ MIT licensed · built in public
 
 ---
 
-> **Status: alpha (v0.1).** This repo currently contains the marketing/landing site and an
-> interactive demo running on synthetic trace data. The recorder, inspector, and MCP server land
-> phase by phase — see [`docs/ROADMAP.md`](docs/ROADMAP.md).
+> **Status: alpha (v0.1) · built in public.** Shipped: the trace schema, the recorder (server-side
+> capture via `AsyncLocalStorage` + React `cache()` render capture), the inspector (5 modes, `.frec`
+> import/export), AI summaries + bug reports, secret redaction, and 3 demo flows. Next: MCP server,
+> browser persistence. See [`docs/ROADMAP.md`](docs/ROADMAP.md) ·
+> [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## Why
 
@@ -37,18 +39,34 @@ runtime metadata, or generic session replay:
 5. **Response mutations** — cookie writes, header mutations, redirects
 6. **Client tree** — the client-visible nodes created, patched, removed
 
-## Getting started (landing + demo)
+## Getting started
 
 ```bash
 pnpm install
 pnpm dev      # http://localhost:3000
 ```
 
+Routes to try:
+
+- **`/inspector`** — scrub a recorded session (try `?demo=blog`, `?demo=dashboard`, `?demo=auth`)
+- **`/playground`** — record a real session live (server action → `.frec` → inspect)
+- **`/docs`** — documentation
+
+AI summaries/bug-reports need a free key (Groq by default) — copy `apps/web/.env.example` to
+`apps/web/.env.local` and set `AI_API_KEY`. Without it, the buttons show a graceful prompt.
+
+```bash
+pnpm test        # vitest across all packages
+pnpm typecheck
+pnpm build
+```
+
 ## Docs
 
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — as-built HLD/LLD, components, flows, decisions
 - [`docs/ROADMAP.md`](docs/ROADMAP.md) — phased build plan, monorepo blueprint, stack decisions
-- [`docs/LANDING_PAGE.md`](docs/LANDING_PAGE.md) — landing page design blueprint
-- [`docs/BUILD_IN_PUBLIC.md`](docs/BUILD_IN_PUBLIC.md) — the build-in-public playbook
+- [`docs/INSPECTOR-IA.md`](docs/INSPECTOR-IA.md) — inspector's 5-region wireframe
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — dev setup + PR flow
 
 ## License
 
