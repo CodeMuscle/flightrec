@@ -54,6 +54,8 @@
     "wireframes",
     "idempotency",
     "reconciler",
-    "normalizer"
+    "normalizer",
+    "Groq",
+    "openai"
   ]
 }
