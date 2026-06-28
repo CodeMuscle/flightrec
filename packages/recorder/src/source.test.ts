@@ -44,6 +44,14 @@ describe("parseStack", () => {
     expect(parseStack(stack, { root: ROOT })).toMatchObject({ file: "app/api/route.ts" });
   });
 
+  it("keeps app files merely named 'recorder' (only the package is skipped)", () => {
+    const stack = ["Error", "    at Page (/proj/apps/web/app/recorder/page.tsx:4:2)"].join("\n");
+    expect(parseStack(stack, { root: ROOT })).toMatchObject({
+      file: "app/recorder/page.tsx",
+      symbol: "Page",
+    });
+  });
+
   it("returns null when no app frame exists", () => {
     const stack = ["Error", "    at run (node:internal/x:1:1)"].join("\n");
     expect(parseStack(stack, { root: ROOT })).toBeNull();
