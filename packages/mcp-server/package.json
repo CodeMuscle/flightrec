@@ -1,0 +1,25 @@
+{
+  "name": "@flightrec/mcp-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@flightrec/trace-analyze": "workspace:*",
+    "@flightrec/trace-schema": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@flightrec/trace-fixtures": "workspace:*",
+    "@types/node": "^20",
+    "tsx": "^4.22.4",
+    "typescript": "^5",
+    "vitest": "^4"
+  }
+}

@@ -23,7 +23,7 @@ import {
   causalChain,
   narrate,
   reconcileTree,
-} from "./derive";
+} from "./index";
 
 const session = blogPostSession();
 

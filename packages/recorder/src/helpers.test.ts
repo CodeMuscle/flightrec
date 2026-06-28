@@ -36,6 +36,16 @@ describe("recording helpers", () => {
   it("helpers are no-ops outside a recording scope", () => {
     expect(recordCacheUpdate("x")).toBeUndefined();
   });
+
+  it("keeps an explicit sourceRef (capture is only the fallback)", async () => {
+    const { session } = await runWithSession({ sessionId: "src" }, () => {
+      recordServerActionStart("createPost", "app/posts/actions.ts:createPost");
+    });
+    // Auto-capture from inside the recorder package is filtered out by design, so the explicit
+    // arg must win untouched. End-to-end capture is verified via /playground (see plan).
+    expect(session.events[0].sourceRef).toBe("app/posts/actions.ts:createPost");
+    expect(session.events[0].meta).toBeUndefined();
+  });
 });
 
 // Transport Module D
