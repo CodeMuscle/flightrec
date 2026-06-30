@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@flightrec/trace-fixtures": "workspace:*",
-    "typescript": "^5",
+    "typescript": "^6",
     "vitest": "^4"
   }
 }

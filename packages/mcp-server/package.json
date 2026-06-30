@@ -13,13 +13,13 @@
     "@flightrec/trace-analyze": "workspace:*",
     "@flightrec/trace-schema": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "zod": "^3.24.0"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@flightrec/trace-fixtures": "workspace:*",
-    "@types/node": "^20",
+    "@types/node": "^26",
     "tsx": "^4.22.4",
-    "typescript": "^5",
+    "typescript": "^6",
     "vitest": "^4"
   }
 }
