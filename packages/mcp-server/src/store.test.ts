@@ -1,7 +1,7 @@
 import { blogPostSession } from "@flightrec/trace-fixtures";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, join } from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 import { listSessions, loadSession, sessionIds } from "./store";
 
@@ -29,5 +29,21 @@ describe("store", () => {
   it("listSessions drops invalid files and never throws on a bad dir", () => {
     expect(listSessions(dir).map((s) => s.id)).toEqual([session.id]);
     expect(listSessions(join(dir, "does-not-exist"))).toEqual([]);
+  });
+
+  // Ids arrive from MCP tool arguments. `join` normalizes "../" instead of rejecting it, so without
+  // the guard a caller could read any .frec on disk outside the configured directory.
+  it("rejects ids that escape the directory", () => {
+    const outside = mkdtempSync(join(tmpdir(), "frec-outside-"));
+    writeFileSync(join(outside, "secret.frec"), JSON.stringify(session));
+    const escapingId = join("..", basename(outside), "secret");
+
+    expect(loadSession(dir, escapingId)).toBeUndefined();
+    expect(loadSession(dir, "../../etc/passwd")).toBeUndefined();
+    expect(loadSession(dir, "sub/nested")).toBeUndefined();
+    expect(loadSession(dir, "..")).toBeUndefined();
+    expect(loadSession(dir, "")).toBeUndefined();
+    // the same file read by its bare id still works, so the guard is not over-broad
+    expect(loadSession(outside, "secret")?.id).toBe(session.id);
   });
 });

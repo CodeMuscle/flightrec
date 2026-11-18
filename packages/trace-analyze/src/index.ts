@@ -285,13 +285,15 @@ export type TreeNode = {
 export function reconcileTree(session: Session, tick: number): TreeNode[] {
   type Flat = { node: TreeNode; parentId?: string };
   const flat = new Map<string, Flat>();
-  const order: string[] = [];
+  // A Set, not an array: create → remove → create of the same id would otherwise append it twice and
+  // emit the node (and its subtree) twice at assembly. Insertion order is preserved either way.
+  const order = new Set<string>();
 
   for (const frame of rscFramesUpTo(session, tick)) {
     for (const op of frameOps(frame)) {
       switch (op.type) {
         case "node-create": {
-          if (!flat.has(op.nodeId)) order.push(op.nodeId);
+          order.add(op.nodeId);
           flat.set(op.nodeId, {
             node: { id: op.nodeId, label: op.label, props: {}, suspended: false, children: [] },
             parentId: op.parentId,

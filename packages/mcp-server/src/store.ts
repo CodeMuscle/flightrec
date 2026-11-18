@@ -19,8 +19,20 @@ export function sessionIds(dir: string): string[] {
   }
 }
 
-/** Load + schema-validate one session by id; undefined if missing or invalid. */
+/**
+ * A session id must name a file directly inside `dir`. Ids reach us from MCP tool arguments, and
+ * `join` normalizes "../" rather than rejecting it, so "../../etc/passwd" would otherwise escape the
+ * configured directory. Schema validation runs after the read, far too late to help.
+ */
+function isSafeId(id: string): boolean {
+  if (id === "" || id === "." || id === "..") return false;
+  if (id.includes("/") || id.includes("\\") || id.includes("\0")) return false;
+  return true;
+}
+
+/** Load + schema-validate one session by id; undefined if missing, unsafe or invalid. */
 export function loadSession(dir: string, id: string): Session | undefined {
+  if (!isSafeId(id)) return undefined;
   try {
     const parsed = Session.safeParse(JSON.parse(readFileSync(join(dir, `${id}.frec`), "utf8")));
     return parsed.success ? parsed.data : undefined;

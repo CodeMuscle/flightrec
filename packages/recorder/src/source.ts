@@ -1,4 +1,5 @@
 import { relative } from "node:path";
+import { fileURLToPath } from "node:url";
 
 /** A parsed source location from a stack frame. */
 export type Source = { file: string; symbol: string; line: number; col: number };
@@ -33,7 +34,21 @@ function parseFrame(raw: string): { name: string; path: string; line: number; co
   let body = trimmed.slice(3).trim();
   let name = "";
   if (body.endsWith(")")) {
-    const open = body.lastIndexOf("(");
+    // Match the "(" that pairs with the trailing ")" rather than the last one, so parenthesised path
+    // segments stay inside the location. Next.js route groups ("/app/(auth)/page.tsx") hit this.
+    let depth = 0;
+    let open = -1;
+    for (let i = body.length - 1; i >= 0; i--) {
+      const ch = body[i];
+      if (ch === ")") depth++;
+      else if (ch === "(") {
+        depth--;
+        if (depth === 0) {
+          open = i;
+          break;
+        }
+      }
+    }
     if (open === -1) return null;
     name = body.slice(0, open).trim();
     body = body.slice(open + 1, -1);
@@ -53,25 +68,42 @@ function parseFrame(raw: string): { name: string; path: string; line: number; co
   return { name, path: body.slice(0, li), line, col };
 }
 
+/**
+ * ESM frames arrive as "file:///abs/path.ts". `relative()` treats those as plain strings, so convert
+ * before relativizing; this also decodes percent-escapes. Non-URL paths pass through untouched.
+ */
+function toFsPath(p: string): string {
+  if (!p.startsWith("file:")) return p;
+  try {
+    return fileURLToPath(p);
+  } catch {
+    return p;
+  }
+}
+
 /** Parse a V8 stack string and return the first app frame (relative to `root`), or null. */
 export function parseStack(stack: string, opts: { root?: string } = {}): Source | null {
   const root = opts.root ?? process.cwd();
   for (const raw of stack.split("\n")) {
     const f = parseFrame(raw);
-    if (!f || !isAppFrame(f.path)) continue;
-    return { file: relative(root, f.path), symbol: cleanSymbol(f.name), line: f.line, col: f.col };
+    if (!f) continue;
+    const file = toFsPath(f.path);
+    if (!isAppFrame(file)) continue;
+    return { file: relative(root, file), symbol: cleanSymbol(f.name), line: f.line, col: f.col };
   }
   return null;
 }
 
 /** Capture the current call site as a Source. `stack` is injectable for deterministic tests. */
 export function captureSource(opts: { stack?: string; root?: string } = {}): Source | null {
-  const stack = opts.stack ?? new Error().stack;
-  if (!stack) return null;
   try {
+    // Reading `.stack` runs any installed Error.prepareStackTrace, which can itself throw, so the
+    // read belongs inside the guard. A capture failure must never reach the recorded code path.
+    const stack = opts.stack ?? new Error().stack;
+    if (!stack) return null;
     return parseStack(stack, { root: opts.root });
   } catch {
-    return null; // never let source capture throw into the recorded code path
+    return null;
   }
 }
 

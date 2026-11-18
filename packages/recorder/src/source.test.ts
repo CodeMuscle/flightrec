@@ -75,4 +75,52 @@ describe("captureSource", () => {
   it("never throws on a malformed stack", () => {
     expect(captureSource({ stack: "garbage with no frames" })).toBeNull();
   });
+
+  // Reading `.stack` runs Error.prepareStackTrace. A formatter installed by the host app can throw,
+  // and that must not escape into the recorded code path.
+  it("returns null when reading the stack itself throws", () => {
+    const original = Error.prepareStackTrace;
+    Error.prepareStackTrace = () => {
+      throw new Error("formatter blew up");
+    };
+    try {
+      expect(captureSource({ root: "/proj" })).toBeNull();
+    } finally {
+      Error.prepareStackTrace = original;
+    }
+  });
+});
+
+describe("parseStack path handling", () => {
+  // Next.js route groups put parentheses inside the path; matching the last "(" would split it.
+  it("keeps parenthesised path segments intact", () => {
+    const stack = ["Error", "    at save (/proj/app/(auth)/actions.ts:12:34)"].join("\n");
+    expect(parseStack(stack, { root: "/proj" })).toEqual({
+      file: "app/(auth)/actions.ts",
+      symbol: "save",
+      line: 12,
+      col: 34,
+    });
+  });
+
+  it("handles nested parentheses in a path", () => {
+    const stack = ["Error", "    at run (/proj/app/(a)/(b)/x.ts:1:2)"].join("\n");
+    expect(parseStack(stack, { root: "/proj" })?.file).toBe("app/(a)/(b)/x.ts");
+  });
+
+  // ESM frames are file: URLs; relative() would otherwise treat the whole URL as a path segment.
+  it("converts file: URLs before relativizing", () => {
+    const stack = ["Error", "    at save (file:///proj/app/actions.ts:12:34)"].join("\n");
+    expect(parseStack(stack, { root: "/proj" })).toEqual({
+      file: "app/actions.ts",
+      symbol: "save",
+      line: 12,
+      col: 34,
+    });
+  });
+
+  it("decodes percent-escapes in file: URLs", () => {
+    const stack = ["Error", "    at save (file:///proj/app/my%20route/x.ts:3:4)"].join("\n");
+    expect(parseStack(stack, { root: "/proj" })?.file).toBe("app/my route/x.ts");
+  });
 });

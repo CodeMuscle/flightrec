@@ -29,7 +29,7 @@ pnpm --filter @flightrec/mcp-server start /path/to/.flightrec
   "mcpServers": {
     "flightrec": {
       "command": "pnpm",
-      "args": ["--filter", "@flightrec/mcp-server", "start"],
+      "args": ["--silent", "--filter", "@flightrec/mcp-server", "start"],
       "env": { "FLIGHTREC_DIR": "/abs/path/to/your-app/.flightrec" }
     }
   }
