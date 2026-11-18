@@ -1,13 +1,21 @@
 import { recordEvent } from "./context";
+import { captureSource, formatSourceRef } from "./source";
 
 /** Record a user interaction (form input, click) on a route. */
 export function recordUserInput(route?: string, sourceRef?: string) {
   return recordEvent({ phase: "user-input", route, sourceRef });
 }
 
-/** Record the start of a Server Action. */
+/** Record the start of a Server Action. Auto-fills source from the call stack when omitted. */
 export function recordServerActionStart(actionName: string, sourceRef?: string, route?: string) {
-  return recordEvent({ phase: "server-action:start", actionName, sourceRef, route });
+  const src = sourceRef ? undefined : captureSource();
+  return recordEvent({
+    phase: "server-action:start",
+    actionName,
+    sourceRef: sourceRef ?? (src ? formatSourceRef(src) : undefined),
+    route,
+    meta: src ? { line: src.line, col: src.col } : undefined,
+  });
 }
 
 /** Record the end of a Server Action, with timing + success. */
@@ -52,9 +60,14 @@ export function recordRedirect(to: string, status = 307) {
 // Harden Transport Module D
 /** Record a caught error as an `error` event (name + message). Redirects are not errors. */
 export function recordError(error: unknown, sourceRef?: string) {
-  const meta =
+  const base =
     error instanceof Error
       ? { name: error.name, message: error.message }
       : { message: String(error) };
-  return recordEvent({ phase: "error", sourceRef, meta });
+  const src = sourceRef ? undefined : captureSource();
+  return recordEvent({
+    phase: "error",
+    sourceRef: sourceRef ?? (src ? formatSourceRef(src) : undefined),
+    meta: src ? { ...base, line: src.line, col: src.col } : base,
+  });
 }
