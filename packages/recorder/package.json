@@ -17,8 +17,8 @@
     "@flightrec/trace-schema": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "typescript": "^5",
-    "vitest": "^4"
+    "@types/node": "^26",
+    "typescript": "^7",
+    "vitest": "^5"
   }
 }
